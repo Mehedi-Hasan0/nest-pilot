@@ -10,7 +10,8 @@
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"**/*.{ts,json,md}\"",
     "test": "npm run test --workspace=cli",
-    "prepare": "husky"
+    "prepare": "husky",
+    "release": "standard-version"
   },
   "lint-staged": {
     "*.ts": [
@@ -32,6 +33,7 @@
     "@nestjs/swagger": "^11.2.6",
     "@nestjs/testing": "^11.1.17",
     "@nestjs/typeorm": "^11.0.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/passport-jwt": "^4.0.1",
@@ -53,11 +55,11 @@
     "passport-jwt": "^4.0.1",
     "prettier": "^3.x",
     "reflect-metadata": "^0.2.2",
+    "standard-version": "^9.5.0",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
     "typeorm": "^0.3.28",
     "typescript": "~5.5.0",
-    "@types/bcrypt": "^5.0.2",
     "uuid": "^10.0.0",
     "zod": "^4.3.6"
   }
