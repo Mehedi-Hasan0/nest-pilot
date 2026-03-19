@@ -16,6 +16,9 @@
   "references": [
     {
       "path": "./cli"
+    },
+    {
+      "path": "./templates"
     }
   ]
 }

@@ -6,8 +6,8 @@ Instead of cloning a generic starter repository and manually deleting hundreds o
 
 ## Current Status
 
-**Phase 0 (Foundation): Complete**
-The core CLI composer engine and shared infrastructure templates are complete. The architecture-specific templates are being actively developed in subsequent phases.
+**Phase 1 (Hexagonal Template): Complete**  
+The first production-ready architecture-specific template is now available, featuring full PRD-01 compliance, security integration, and comprehensive unit/E2E testing.
 
 ## Local Development
 

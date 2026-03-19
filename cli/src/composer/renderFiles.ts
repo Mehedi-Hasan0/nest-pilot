@@ -44,6 +44,10 @@ async function walkAndRender(
   if (stat.isDirectory()) {
     const entries = await fs.readdir(currentPath);
     for (const entry of entries) {
+      if (entry === 'node_modules' || entry === '.git') {
+        continue;
+      }
+
       await walkAndRender(
         rootSourcePath,
         path.join(currentPath, entry),
