@@ -1,0 +1,3 @@
+# Normalize line endings to LF to prevent Windows/Mac text mismatch warnings
+* text=auto eol=lf
+*.bat text eol=crlf
