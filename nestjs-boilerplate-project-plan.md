@@ -90,7 +90,7 @@ These are the non-negotiable standards that every generated project will have, r
 - `@nestjs/throttler` — rate limiting with configurable defaults
 - CORS configured with environment-aware origins
 - Input validation via `class-validator` and `class-transformer` with a global validation pipe
-- Environment variable validation using `Joi` on startup (the app refuses to start with missing/invalid env)
+- Environment variable validation using `Zod` on startup (the app refuses to start with missing/invalid env)
 - No secrets in code — `.env.example` provided, `.env` gitignored
 
 **Code quality (always included):**

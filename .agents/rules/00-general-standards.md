@@ -20,6 +20,6 @@ You are working on **Nest-Pilot**. Every contribution must meet these foundation
 ## 3. Security & Infrastructure
 
 - **Security Baseline**: Always include Helmet, Throttler, and ValidationPipe.
-- **Environment**: All environment variables must be validated (e.g., using Joi) on startup.
+- **Environment**: All environment variables must be validated (e.g., using Zod) on startup.
 - **Docker**: Every template project must have a multi-stage `Dockerfile` (builder + production) and `docker-compose.yml`.
 - **Git**: Automated `git init` and initial commit for every generated project.

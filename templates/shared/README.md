@@ -15,7 +15,7 @@ shared/
 ## What belongs here
 
 - Files that are **identical across all three architectures**.
-- The security baseline: Helmet, Throttler, class-validator, Joi env validation.
+- The security baseline: Helmet, Throttler, class-validator, Zod env validation.
 - The observability baseline: Pino logger, health check endpoint (`@nestjs/terminus`).
 - Developer tooling: ESLint, Prettier, Commitlint, Husky, lint-staged.
 

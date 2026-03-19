@@ -1,13 +1,13 @@
 # PRD-01: Hexagonal Architecture Template
 
-| Field | Value |
-|---|---|
-| Document ID | PRD-01 |
-| Phase | 1 — Hexagonal Template |
-| Status | Ready to Build |
-| Depends On | PRD-00 (shared templates, composer engine) |
-| Blocks | PRD-02 (CLI cannot generate a real project without this) |
-| Estimated Duration | 1–2 weeks |
+| Field              | Value                                                    |
+| ------------------ | -------------------------------------------------------- |
+| Document ID        | PRD-01                                                   |
+| Phase              | 1 — Hexagonal Template                                   |
+| Status             | Ready to Build                                           |
+| Depends On         | PRD-00 (shared templates, composer engine)               |
+| Blocks             | PRD-02 (CLI cannot generate a real project without this) |
+| Estimated Duration | 1–2 weeks                                                |
 
 ---
 
@@ -15,7 +15,7 @@
 
 This document defines the complete specification for the Hexagonal Architecture template. It covers every file, every folder, every README, every test, and every architectural rule that must be present and correct before this phase is considered done.
 
-This is the most important phase of the entire project. The quality bar set here becomes the standard every subsequent architecture must match. There are no shortcuts permitted. Every file must be fully implemented, not stubbed. Every README must explain both the *what* and the *why*.
+This is the most important phase of the entire project. The quality bar set here becomes the standard every subsequent architecture must match. There are no shortcuts permitted. Every file must be fully implemented, not stubbed. Every README must explain both the _what_ and the _why_.
 
 ---
 
@@ -23,9 +23,10 @@ This is the most important phase of the entire project. The quality bar set here
 
 ### 2.1 What Hexagonal Architecture Is
 
-Hexagonal Architecture (also called Ports and Adapters, coined by Alistair Cockburn) organizes an application around a **domain core** that is completely isolated from the outside world. The core expresses what it *needs* from the outside world through **ports** (interfaces), and the outside world communicates with the core through **adapters** (implementations of those interfaces).
+Hexagonal Architecture (also called Ports and Adapters, coined by Alistair Cockburn) organizes an application around a **domain core** that is completely isolated from the outside world. The core expresses what it _needs_ from the outside world through **ports** (interfaces), and the outside world communicates with the core through **adapters** (implementations of those interfaces).
 
 The result is an application where:
+
 - Business logic has zero framework, database, or HTTP dependencies
 - Every layer is independently testable
 - Swapping a database, HTTP framework, or external service requires touching only the adapter — the domain and application layers are untouched
@@ -54,6 +55,7 @@ The result is an application where:
 ### 2.3 The Example Domain
 
 All example code is built around a **Blog platform** with three entities:
+
 - **User** — can register, log in, and author posts
 - **Post** — can be created as a draft, published, and unpublished
 - **Comment** — can be added to a published post by any user
@@ -219,6 +221,7 @@ These rules must be enforced both through convention (documented in READMEs) and
 ```
 
 The User entity must enforce these business rules in code, not just comments:
+
 - Email must be a valid email format (enforced by the Email value object)
 - Name must be between 2 and 100 characters
 - A user cannot change their email to the same email they already have (this demonstrates that business rules live in the entity, not in a service)
@@ -226,6 +229,7 @@ The User entity must enforce these business rules in code, not just comments:
 **`post.entity.ts`**
 
 Must model the Post lifecycle with these states: `DRAFT`, `PUBLISHED`, `UNPUBLISHED`. State transitions must enforce:
+
 - Only a draft post can be published
 - Only a published post can be unpublished
 - A published post's title cannot be changed (demonstrates state-dependent rules)
@@ -239,6 +243,7 @@ Must associate a comment with both a post ID and an author (user ID). Must enfor
 ### 4.3 Value Object Specifications
 
 All value objects must:
+
 - Be **immutable** (readonly properties, no setters)
 - Validate their value at construction time and throw a domain error if invalid
 - Implement an `equals(other: ThisType): boolean` method
@@ -352,6 +357,7 @@ export class RegisterUserUseCase {
 ```
 
 **Key rules demonstrated in this pattern:**
+
 - The use case is `@Injectable()` (application layer is allowed to use NestJS DI)
 - It depends on the port interface, not the TypeORM implementation
 - It returns a DTO, not a domain entity (domain entities must not leak outside the application boundary)
@@ -360,6 +366,7 @@ export class RegisterUserUseCase {
 ### 5.3 DTO Specifications
 
 Response DTOs must:
+
 - Be plain classes with public readonly properties
 - Implement a static `fromEntity(entity: DomainEntity): ThisDto` factory method
 - Contain no validation decorators (those belong on input DTOs at the controller level)
@@ -368,15 +375,18 @@ Response DTOs must:
 ### 5.4 Use Cases to Implement
 
 **User use cases:**
+
 - `RegisterUserUseCase` — creates a new user, throws `EmailAlreadyInUseError` if email exists
 - `GetUserProfileUseCase` — retrieves a user by ID, throws `UserNotFoundError` if not found
 
 **Post use cases:**
+
 - `CreatePostUseCase` — creates a draft post for a given author
 - `PublishPostUseCase` — transitions a post from draft to published, enforces ownership
 - `GetPostUseCase` — retrieves a post by ID with its comment count
 
 **Comment use case:**
+
 - `AddCommentUseCase` — adds a comment to a published post, throws if post is not published
 
 ---
@@ -390,6 +400,7 @@ Response DTOs must:
 ORM entities must be **separate classes** from domain entities. This is non-negotiable. They exist in `infrastructure/persistence/typeorm/entities/`.
 
 The `UserOrmEntity` must:
+
 - Use TypeORM decorators (`@Entity`, `@Column`, `@PrimaryColumn`, etc.)
 - Use `uuid` as the primary key type (not auto-increment integer)
 - Have no business methods — it is purely a database schema representation
@@ -438,6 +449,7 @@ Note what this demonstrates: the adapter's public interface is typed against the
 #### Controller Specifications
 
 Controllers must:
+
 - Be thin — no business logic, only input validation and use case invocation
 - Use class-validator DTOs for request body validation
 - Use `@Inject()` to receive use case instances (not service classes)
@@ -521,7 +533,7 @@ This pattern (global guard + `@Public()` opt-out) is safer than opt-in authentic
 
 ### 6.4 Config Sublayer
 
-**`env.validation.ts`** — Uses Joi to define and validate all required environment variables at application startup. The app must refuse to start if any required variable is missing or invalid. The validation schema must be documented with inline comments explaining each variable.
+**`env.validation.ts`** — Uses Zod to define and validate all required environment variables at application startup. The app must refuse to start if any required variable is missing or invalid. The validation schema must be documented with inline comments explaining each variable.
 
 **`app.config.ts`**, **`database.config.ts`**, **`auth.config.ts`** — Typed config classes using `@nestjs/config`'s `ConfigService`. Controllers and services must never call `process.env` directly — they must use the config service.
 
@@ -554,7 +566,7 @@ This is the most important wiring to get right. The `provide: USER_REPOSITORY_PO
 ```typescript
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn'],  // Pino handles logging; disable NestJS default logger
+    logger: ['error', 'warn'], // Pino handles logging; disable NestJS default logger
   });
 
   // Security
@@ -562,11 +574,13 @@ async function bootstrap() {
   app.enableCors({ origin: configService.get('APP_CORS_ORIGIN') });
 
   // Global pipes, filters, interceptors
-  app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,           // Strip non-whitelisted properties
-    forbidNonWhitelisted: true, // Throw on non-whitelisted properties
-    transform: true,           // Auto-transform payloads to DTO class instances
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // Strip non-whitelisted properties
+      forbidNonWhitelisted: true, // Throw on non-whitelisted properties
+      transform: true, // Auto-transform payloads to DTO class instances
+    }),
+  );
   app.useGlobalFilters(new DomainExceptionFilter());
 
   // Swagger (development only)
@@ -590,6 +604,7 @@ Each README must answer three questions: what belongs here, what is forbidden, a
 ### `src/domain/README.md`
 
 Must cover:
+
 - Definition: the domain layer is the core of the application, isolated from all external concerns
 - What belongs: entities, value objects, domain errors, repository port interfaces
 - What is forbidden: any NestJS import, any ORM import, any import from application or infrastructure
@@ -599,6 +614,7 @@ Must cover:
 ### `src/application/README.md`
 
 Must cover:
+
 - Definition: orchestration layer — coordinates domain objects to fulfill use cases
 - What belongs: use case classes, command/query input types, response DTOs
 - What is forbidden: direct import from infrastructure, direct database calls
@@ -608,6 +624,7 @@ Must cover:
 ### `src/infrastructure/README.md`
 
 Must cover:
+
 - Definition: everything that touches the outside world lives here
 - The three sublayers: persistence, HTTP, config
 - What belongs: ORM entities, repository adapters, controllers, auth strategies, config
@@ -617,6 +634,7 @@ Must cover:
 ### `src/infrastructure/persistence/typeorm/README.md`
 
 Must cover:
+
 - Why ORM entities are separate from domain entities
 - The three-file pattern: ORM entity + repository adapter + mapper
 - How the `provide: PORT / useClass: ADAPTER` pattern wires the layers together
@@ -624,6 +642,7 @@ Must cover:
 ### `src/infrastructure/http/README.md`
 
 Must cover:
+
 - The flow: HTTP request → Controller DTO validation → Use case command → Presenter → HTTP response
 - Why controllers should be thin
 - The difference between HTTP DTOs (with class-validator) and application commands (without)
@@ -638,6 +657,7 @@ Must cover:
 Domain tests must have **zero mocks, zero NestJS test utilities, zero database**. They test pure TypeScript classes.
 
 **`user.entity.spec.ts`** — must test:
+
 - `User.create()` with valid inputs succeeds
 - `User.create()` with invalid email throws `InvalidEmailError`
 - `User.create()` with name too short throws a domain error
@@ -645,6 +665,7 @@ Domain tests must have **zero mocks, zero NestJS test utilities, zero database**
 - `user.changeEmail()` with the same email throws a domain error
 
 **`email.vo.spec.ts`** — must test:
+
 - Valid emails create a value object successfully
 - Invalid email format throws an error
 - `equals()` returns true for same email, false for different
@@ -653,11 +674,13 @@ Domain tests must have **zero mocks, zero NestJS test utilities, zero database**
 ### 8.2 Application Layer Tests
 
 Application layer tests must:
+
 - Mock the repository port (the interface), not the TypeORM implementation
 - Use Jest's manual mock factory: `jest.fn()` on each port method
 - Not spin up a NestJS application
 
 **`register-user.use-case.spec.ts`** — must test:
+
 - Happy path: `execute()` with valid inputs calls `userRepository.exists()`, then `userRepository.save()`, returns a DTO
 - Email already exists: `userRepository.exists()` returns `true`, throws `EmailAlreadyInUseError`
 - Repository failure: `userRepository.save()` throws, error propagates out
@@ -669,6 +692,7 @@ The key educational value in these tests: the `userRepository` mock is typed as 
 Infrastructure tests use NestJS's `TestingModule` to spin up the relevant module in isolation.
 
 **`user.controller.spec.ts`** — must test the HTTP layer with the use cases mocked:
+
 - POST /users/register with valid body returns 201
 - POST /users/register with missing fields returns 400 (validation pipe)
 - POST /users/register when `RegisterUserUseCase` throws `EmailAlreadyInUseError` returns 409
@@ -676,6 +700,7 @@ Infrastructure tests use NestJS's `TestingModule` to spin up the relevant module
 ### 8.4 End-to-End Test
 
 **`test/user.e2e-spec.ts`** — must test the complete stack against a real database:
+
 - Spin up the full NestJS application in test mode
 - Use a test database (via docker-compose or environment variable override)
 - POST /users/register creates a user and returns 201
@@ -689,7 +714,7 @@ Infrastructure tests use NestJS's `TestingModule` to spin up the relevant module
 
 In addition to the shared security baseline (Helmet, Throttler, ValidationPipe), the hexagonal template must demonstrate:
 
-- **Password hashing**: Passwords must be hashed using `bcrypt` with a salt rounds constant of 12. The hashing must happen inside the domain (in the `Password` value object or `User` entity). The domain should not know *how* bcrypt works — it should call an interface — but this example keeps it simple: bcrypt is called directly as it is a pure computation, not an infrastructure concern.
+- **Password hashing**: Passwords must be hashed using `bcrypt` with a salt rounds constant of 12. The hashing must happen inside the domain (in the `Password` value object or `User` entity). The domain should not know _how_ bcrypt works — it should call an interface — but this example keeps it simple: bcrypt is called directly as it is a pure computation, not an infrastructure concern.
 - **JWT payload minimalism**: The JWT payload must contain only `{ sub: userId }`. No email, no roles, nothing else. Additional user data is fetched from the database on each request by the JWT strategy.
 - **Token expiry**: Must be configurable via environment variable, defaulting to `7d`.
 - **Route protection by default**: All routes are protected by the global `JwtAuthGuard` unless explicitly decorated with `@Public()`.
@@ -717,13 +742,13 @@ Phase 1 is complete when **all** of the following are true:
 
 ## 11. Open Questions
 
-| # | Question | Impact | Status |
-|---|---|---|---|
-| OQ-1 | Should password hashing live in the domain layer (simple bcrypt call in entity) or behind a port interface (`HashingPort`)? The port approach is more "pure" but adds significant complexity for an example. | Domain purity vs template readability | Recommend: **bcrypt directly in domain** with a comment explaining the trade-off |
-| OQ-2 | Should Post and Comment be in the same module or separate modules? | Module wiring complexity | Recommend: **separate modules** to show inter-module dependency patterns |
-| OQ-3 | Should we include Swagger decorators (`@ApiProperty`) on the HTTP DTOs? | Template completeness vs noise | Recommend: **yes, include Swagger** — it's expected in production NestJS |
-| OQ-4 | Should the Prisma variant be built in Phase 1 or only the TypeORM variant? | Phase scope | Recommend: **TypeORM only in Phase 1** — Prisma variant added when CLI composer handles ORM selection in Phase 2 |
+| #    | Question                                                                                                                                                                                                     | Impact                                | Status                                                                                                           |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| OQ-1 | Should password hashing live in the domain layer (simple bcrypt call in entity) or behind a port interface (`HashingPort`)? The port approach is more "pure" but adds significant complexity for an example. | Domain purity vs template readability | Recommend: **bcrypt directly in domain** with a comment explaining the trade-off                                 |
+| OQ-2 | Should Post and Comment be in the same module or separate modules?                                                                                                                                           | Module wiring complexity              | Recommend: **separate modules** to show inter-module dependency patterns                                         |
+| OQ-3 | Should we include Swagger decorators (`@ApiProperty`) on the HTTP DTOs?                                                                                                                                      | Template completeness vs noise        | Recommend: **yes, include Swagger** — it's expected in production NestJS                                         |
+| OQ-4 | Should the Prisma variant be built in Phase 1 or only the TypeORM variant?                                                                                                                                   | Phase scope                           | Recommend: **TypeORM only in Phase 1** — Prisma variant added when CLI composer handles ORM selection in Phase 2 |
 
 ---
 
-*PRD-01 complete. Next: PRD-02 — CLI MVP.*
+_PRD-01 complete. Next: PRD-02 — CLI MVP._
