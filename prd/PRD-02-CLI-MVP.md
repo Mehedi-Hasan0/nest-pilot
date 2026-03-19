@@ -69,6 +69,12 @@ Step 1: Project Setup
    ○  Modular Architecture                [coming in v0.4]
 │  Hexagonal
 
+◇  Include example domain code (Blog platform)?
+   (Provides fully working User, Post, and Comment domains to demonstrate the architecture)
+   ●  Yes, include examples (recommended for learning)
+   ○  No, generate a clean structure only
+│  Yes
+
 Step 2: Database & ORM
 ──────────────────────
 ◇  Which ORM would you like to use?
@@ -118,6 +124,7 @@ Review your selections:
   Database        PostgreSQL
   Auth            JWT
   Optional        Swagger / OpenAPI
+  Examples        Yes
   Package mgr     npm
 
 ◇  Generate project?
@@ -250,15 +257,16 @@ interface ComposerContext {
   projectName: string;
   projectNamePascalCase: string;
   projectNameConstant: string;
-  packageManager: "npm" | "yarn" | "pnpm";
+  packageManager: 'npm' | 'yarn' | 'pnpm';
   year: string;
 
   // Phase 2 additions
-  architecture: "hexagonal" | "ddd" | "modular";
-  orm: "typeorm" | "prisma" | "mikroorm";
-  database: "postgresql" | "mysql" | "mongodb";
-  auth: "jwt" | "session" | "none";
-  optionalModules: Array<"swagger" | "redis" | "bullmq" | "websockets">;
+  architecture: 'hexagonal' | 'ddd' | 'modular';
+  orm: 'typeorm' | 'prisma' | 'mikroorm';
+  database: 'postgresql' | 'mysql' | 'mongodb';
+  auth: 'jwt' | 'session' | 'none';
+  optionalModules: Array<'swagger' | 'redis' | 'bullmq' | 'websockets'>;
+  includeExampleCode: boolean;
 
   // Derived fields for template use
   databaseDriver: string; // e.g., 'pg' for postgresql
@@ -278,14 +286,11 @@ All derived fields must be computed in the `buildContext()` function, not in tem
 After files are written, the composer must run the package manager's install command:
 
 ```typescript
-async function installDependencies(
-  outputDir: string,
-  packageManager: string,
-): Promise<void> {
+async function installDependencies(outputDir: string, packageManager: string): Promise<void> {
   const commands = {
-    npm: "npm install",
-    yarn: "yarn install",
-    pnpm: "pnpm install",
+    npm: 'npm install',
+    yarn: 'yarn install',
+    pnpm: 'pnpm install',
   };
   // Run with a spinner showing "Installing dependencies..."
   // If install fails, print the error output and a message:
@@ -330,15 +335,15 @@ The TypeORM variant is the default and was built in Phase 1. The CLI must:
 TypeOrmModule.forRootAsync({
   imports: [ConfigModule],
   useFactory: (configService: ConfigService) => ({
-    type: "postgres", // or 'mysql' — injected via EJS
-    host: configService.get("DATABASE_HOST"),
-    port: configService.get("DATABASE_PORT"),
-    username: configService.get("DATABASE_USER"),
-    password: configService.get("DATABASE_PASSWORD"),
-    database: configService.get("DATABASE_NAME"),
-    entities: [__dirname + "/**/*.orm-entity{.ts,.js}"],
-    synchronize: configService.get("NODE_ENV") !== "production", // NEVER sync in production
-    logging: configService.get("NODE_ENV") === "development",
+    type: 'postgres', // or 'mysql' — injected via EJS
+    host: configService.get('DATABASE_HOST'),
+    port: configService.get('DATABASE_PORT'),
+    username: configService.get('DATABASE_USER'),
+    password: configService.get('DATABASE_PASSWORD'),
+    database: configService.get('DATABASE_NAME'),
+    entities: [__dirname + '/**/*.orm-entity{.ts,.js}'],
+    synchronize: configService.get('NODE_ENV') !== 'production', // NEVER sync in production
+    logging: configService.get('NODE_ENV') === 'development',
   }),
   inject: [ConfigService],
 });

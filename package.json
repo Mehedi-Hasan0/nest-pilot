@@ -22,15 +22,17 @@
     ]
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.x",
+    "@commitlint/config-conventional": "^19.x",
+    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.x",
     "@typescript-eslint/parser": "^7.x",
     "eslint": "^8.x",
     "eslint-config-prettier": "^9.x",
-    "prettier": "^3.x",
-    "@commitlint/cli": "^19.x",
-    "@commitlint/config-conventional": "^19.x",
     "husky": "^9.x",
     "lint-staged": "^15.x",
-    "typescript": "~5.5.0"
+    "prettier": "^3.x",
+    "typescript": "~5.5.0",
+    "uuid": "^13.0.0"
   }
 }
