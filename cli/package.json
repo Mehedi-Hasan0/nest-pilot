@@ -1,5 +1,5 @@
 {
-  "name": "@yourhandle/nest-pilot",
+  "name": "@mehedi-hasan0/nest-pilot",
   "version": "0.1.0",
   "description": "Interactive CLI for generating NestJS projects with Hexagonal, DDD, or Modular architecture",
   "bin": {

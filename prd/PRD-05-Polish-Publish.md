@@ -76,7 +76,7 @@ The root README is the single most-read file in the project. Every word must ear
 This must be the first substantive content after the tagline. Three commands to a working project:
 
 ```bash
-npm install -g @yourhandle/nest-pilot
+npm install -g @mehedi-hasan0/nest-pilot
 nest-pilot create my-app
 cd my-app && cp .env.example .env
 # Follow the prompts — you'll have a running app in minutes
@@ -155,7 +155,7 @@ The contributing guide must define exactly how someone contributes without requi
 Step-by-step instructions for running the CLI from source:
 
 ```bash
-git clone https://github.com/yourhandle/nest-pilot
+git clone https://github.com/mehedi-hasan0/nest-pilot
 cd nest-pilot
 npm install
 cd cli && npm run dev -- create test-project
@@ -206,19 +206,12 @@ The `cli/package.json` must be finalized before publication:
 
 ```json
 {
-  "name": "@yourhandle/nest-pilot",
+  "name": "@mehedi-hasan0/nest-pilot",
   "version": "1.0.0",
   "description": "Interactive CLI for generating NestJS projects with Hexagonal, DDD, or Modular architecture",
-  "keywords": [
-    "nestjs",
-    "boilerplate",
-    "cli",
-    "hexagonal",
-    "ddd",
-    "architecture"
-  ],
-  "homepage": "https://github.com/yourhandle/nest-pilot",
-  "bugs": "https://github.com/yourhandle/nest-pilot/issues",
+  "keywords": ["nestjs", "boilerplate", "cli", "hexagonal", "ddd", "architecture"],
+  "homepage": "https://github.com/mehedi-hasan0/nest-pilot",
+  "bugs": "https://github.com/mehedi-hasan0/nest-pilot/issues",
   "repository": { "type": "git", "url": "..." },
   "license": "MIT",
   "engines": { "node": ">=18" },
@@ -384,7 +377,7 @@ When removing a feature or changing CLI behavior in a breaking way:
 
 Phase 5 is complete when **all** of the following are true:
 
-- [ ] `npm install -g @yourhandle/nest-pilot` works from the published npm package.
+- [ ] `npm install -g @mehedi-hasan0/nest-pilot` works from the published npm package.
 - [ ] Running `nest-pilot create my-app` from a clean machine (no local repo) generates a working project.
 - [ ] The root README's Quick Start section works exactly as written — no extra steps.
 - [ ] The architecture comparison table accurately reflects all three templates.

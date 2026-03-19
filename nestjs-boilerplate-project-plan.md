@@ -140,11 +140,11 @@ These are the options the CLI will ask about. Not all are asked for every archit
 
 ### 2.7 Package Naming and CLI Command
 
-The CLI will be published to npm as `@yourhandle/nest-pilot` (placeholder — decide a name before Phase 2). The user experience will be:
+The CLI will be published to npm as `@mehedi-hasan0/nest-pilot` (placeholder — decide a name before Phase 2). The user experience will be:
 
 ```bash
 # Install globally
-npm install -g @yourhandle/nest-pilot
+npm install -g @mehedi-hasan0/nest-pilot
 
 # Create a new project
 nest-pilot create my-app

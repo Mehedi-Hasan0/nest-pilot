@@ -1,0 +1,10 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: 💬 Ask a question or start a discussion
+    url: https://github.com/Mehedi-Hasan0/nest-pilot/discussions
+    about: Not sure if it's a bug? Want to talk through an architecture decision? Discussions is the right place.
+
+  - name: 📖 Read the docs first
+    url: https://github.com/Mehedi-Hasan0/nest-pilot#readme
+    about: A lot of common questions are already answered in the README and the per-folder READMEs inside each template.

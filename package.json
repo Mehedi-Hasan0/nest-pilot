@@ -1,6 +1,7 @@
 {
   "name": "nest-pilot",
   "private": true,
+  "license": "MIT",
   "workspaces": [
     "cli"
   ],

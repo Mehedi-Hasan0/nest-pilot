@@ -124,7 +124,7 @@ The CLI must be invocable as `nest-pilot` after global installation. The `packag
 
 ```json
 {
-  "name": "@yourhandle/nest-pilot",
+  "name": "@mehedi-hasan0/nest-pilot",
   "version": "0.1.0",
   "bin": {
     "nest-pilot": "./dist/index.js"
@@ -202,8 +202,8 @@ The composer must expose a single primary function with the following signature:
 ```typescript
 interface ComposerContext {
   projectName: string;
-  architecture: "hexagonal" | "ddd" | "modular";
-  packageManager: "npm" | "yarn" | "pnpm";
+  architecture: 'hexagonal' | 'ddd' | 'modular';
+  packageManager: 'npm' | 'yarn' | 'pnpm';
   // Additional fields added in future phases
 }
 
@@ -316,13 +316,7 @@ Extends `tsconfig.json` and excludes test files and node_modules from compilatio
 ```json
 {
   "extends": "./tsconfig.json",
-  "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.spec.ts",
-    "**/*.e2e-spec.ts",
-    "test"
-  ]
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.e2e-spec.ts", "test"]
 }
 ```
 
@@ -510,7 +504,7 @@ These must be answered before or during Phase 0 work. Document the decision and 
 
 | #    | Question                                                                                                                   | Impact                                                             | Status                                                                                         |
 | ---- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| OQ-1 | What will the npm package name be? (`@yourhandle/nest-pilot` is a placeholder)                                             | Affects `package.json`, README, npm publish step                   | Unresolved                                                                                     |
+| OQ-1 | What will the npm package name be? (`@mehedi-hasan0/nest-pilot` is a placeholder)                                          | Affects `package.json`, README, npm publish step                   | Unresolved                                                                                     |
 | OQ-2 | Should the CLI be written in ESM or CommonJS? ESM is the future but CommonJS has fewer edge cases with Node tooling today. | Affects all import/export syntax in CLI source                     | Unresolved — **recommend CommonJS for now** to avoid ESM + `tsx` + Jest interop headaches      |
 | OQ-3 | Should template files use `.ejs` extension or a custom extension like `.tmpl`?                                             | Affects all template files and the composer's file detection logic | Unresolved — **recommend `.ejs`** for editor support                                           |
 | OQ-4 | Where should the CLI look for templates at runtime — relative to the installed package or via an absolute path?            | Critical for npm global install to work correctly                  | Unresolved — **recommend resolving from `__dirname`** relative to the compiled CLI entry point |
