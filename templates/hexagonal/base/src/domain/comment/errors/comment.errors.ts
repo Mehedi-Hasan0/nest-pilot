@@ -1,13 +1,13 @@
-export class InvalidCommentContentError extends Error {
-  constructor() {
-    super('A comment must be between 1 and 500 characters long.');
-    this.name = 'InvalidCommentContentError';
+import { DomainError } from '../../common/domain.error';
+
+export class InvalidCommentContentError extends DomainError {
+  constructor(details: string) {
+    super(`Invalid comment content: ${details}`);
   }
 }
 
-export class CommentNotFoundError extends Error {
-  constructor(identifier: string) {
-    super(`Comment not found: ${identifier}`);
-    this.name = 'CommentNotFoundError';
+export class CommentNotFoundError extends DomainError {
+  constructor(id: string) {
+    super(`Comment with ID ${id} was not found.`);
   }
 }

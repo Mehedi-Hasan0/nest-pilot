@@ -33,7 +33,7 @@ export class Comment extends BaseEntity<CommentId> {
     id: string,
     props: { content: string; authorId: string; postId: string },
     createdAt: Date,
-    updatedAt: Date,
+    updatedAt?: Date,
   ): Comment {
     return new Comment(
       CommentId.create(id),
@@ -68,7 +68,7 @@ export class Comment extends BaseEntity<CommentId> {
   private validateContent(content: string): void {
     const trimmed = content?.trim() || '';
     if (trimmed.length < 1 || trimmed.length > 500) {
-      throw new InvalidCommentContentError();
+      throw new InvalidCommentContentError('Content must be between 1 and 500 characters.');
     }
   }
 }

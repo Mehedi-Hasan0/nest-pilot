@@ -34,7 +34,7 @@ export class User extends BaseEntity<UserId> {
     id: string,
     props: { name: string; email: string; passwordHash: string },
     createdAt: Date,
-    updatedAt: Date,
+    updatedAt?: Date,
   ): User {
     return new User(
       UserId.create(id),
@@ -62,7 +62,7 @@ export class User extends BaseEntity<UserId> {
 
   public changeEmail(newEmail: Email): void {
     if (this._email.equals(newEmail)) {
-      throw new EmailAlreadySetError(newEmail.value);
+      throw new EmailAlreadySetError();
     }
 
     this._email = newEmail;
@@ -77,7 +77,7 @@ export class User extends BaseEntity<UserId> {
 
   private validateName(name: string): void {
     if (!name || name.trim().length < 2 || name.trim().length > 100) {
-      throw new InvalidNameError();
+      throw new InvalidNameError(name || '');
     }
   }
 }
