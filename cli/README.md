@@ -2,6 +2,10 @@
 
 The `cli` npm workspace package. This is the user-facing binary (`nest-pilot`) and the composer engine that powers project generation.
 
+Currently supports:
+
+- **Hexagonal Architecture**
+
 ## What belongs here
 
 - **`src/commands/`** — Commander command definitions. One file per top-level CLI command (`create`, and future commands).

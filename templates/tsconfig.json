@@ -12,7 +12,9 @@
     "sourceMap": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "types": ["node"]
+    "types": ["node", "jest"],
+    "outDir": "dist",
+    "noEmit": true
   },
   "include": ["**/*.ts"]
 }
