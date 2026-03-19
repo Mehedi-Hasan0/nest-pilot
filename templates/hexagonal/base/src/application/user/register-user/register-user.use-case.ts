@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { Injectable, Inject } from '@nestjs/common';
 import { RegisterUserCommand } from './register-user.command';
 import { UserResponseDto } from '../common/user-response.dto';
@@ -26,8 +27,9 @@ export class RegisterUserUseCase {
       throw new EmailAlreadyInUseError(email.value);
     }
 
-    // 3. Orchestrate password hashing (Note: Hash mechanism should ideally be isolated behind a port, simplified here)
-    const passwordHash = `hashed_${command.passwordRaw}`; // TODO: Replace with hashing service port
+    // 3. Orchestrate password hashing
+    const saltRounds = 12;
+    const passwordHash = await bcrypt.hash(command.passwordRaw, saltRounds);
 
     // 4. Create pure Domain Entity
     const user = User.create({

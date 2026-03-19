@@ -1,3 +1,4 @@
+import helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -8,9 +9,14 @@ import { ConfigService } from '@nestjs/config';
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
 
-  // Global Configuration
   const configService = app.get<ConfigService>(ConfigService);
   const port = configService.getOrThrow<number>('PORT');
+
+  // Security
+  app.use(helmet());
+  app.enableCors({
+    origin: configService.get<string>('APP_CORS_ORIGIN') || '*',
+  });
 
   // Global Interceptors & Filters
   app.useGlobalPipes(
@@ -21,6 +27,9 @@ async function bootstrap(): Promise<void> {
     }),
   );
   app.useGlobalFilters(new DomainExceptionFilter());
+
+  // Graceful Shutdown
+  app.enableShutdownHooks();
 
   // Swagger Documentation
   const config = new DocumentBuilder()
