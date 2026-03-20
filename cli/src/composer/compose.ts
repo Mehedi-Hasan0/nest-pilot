@@ -41,7 +41,7 @@ export async function compose(options: ComposerOptions): Promise<void> {
   const { outputDir, context, dryRun = false, skipGit = false, verbose = false } = options;
 
   // Step 1: Resolve source template paths
-  const sourcePaths = resolveSourcePaths(context.architecture);
+  const sourcePaths = resolveSourcePaths(context);
 
   // Step 2: Build the EJS context object
   const ejsContext = buildContext(context);
