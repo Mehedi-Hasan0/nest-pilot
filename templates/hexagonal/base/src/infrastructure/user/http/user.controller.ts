@@ -4,7 +4,8 @@ import { RegisterUserUseCase } from '../../../application/user/register-user/reg
 import { GetUserProfileUseCase } from '../../../application/user/get-user-profile/get-user-profile.use-case';
 import { RegisterUserRequestDto } from './dto/register-user.request.dto';
 import { RegisterUserCommand } from '../../../application/user/register-user/register-user.command';
-import { UserResponseDto } from '../../../application/user/common/user-response.dto';
+import { Public } from '../../common/auth/public.decorator';
+import { UserPresenter, UserHttpResponse } from './user.presenter';
 
 @ApiTags('users')
 @Controller('users')
@@ -16,18 +17,22 @@ export class UserController {
 
   @Post()
   @HttpCode(201)
+  @Public() // Registration is open — no JWT required
   @ApiOperation({ summary: 'Register a new user' })
-  @ApiResponse({ status: 201, type: UserResponseDto })
-  public async registerUser(@Body() dto: RegisterUserRequestDto): Promise<UserResponseDto> {
-    const command = new RegisterUserCommand(dto.email, dto.name, dto.password);
-    return this.registerUserUseCase.execute(command);
+  @ApiResponse({ status: 201, description: 'User registered successfully' })
+  public async registerUser(@Body() dto: RegisterUserRequestDto): Promise<UserHttpResponse> {
+    const result = await this.registerUserUseCase.execute(
+      new RegisterUserCommand(dto.email, dto.name, dto.password),
+    );
+    return UserPresenter.toResponse(result);
   }
 
   @Get(':id')
   @HttpCode(200)
-  @ApiOperation({ summary: 'Get user profile' })
-  @ApiResponse({ status: 200, type: UserResponseDto })
-  public async getUserProfile(@Param('id') id: string): Promise<UserResponseDto> {
-    return this.getUserProfileUseCase.execute(id);
+  @ApiOperation({ summary: 'Get user profile by ID' })
+  @ApiResponse({ status: 200, description: 'User profile returned successfully' })
+  public async getUserProfile(@Param('id') id: string): Promise<UserHttpResponse> {
+    const result = await this.getUserProfileUseCase.execute(id);
+    return UserPresenter.toResponse(result);
   }
 }
