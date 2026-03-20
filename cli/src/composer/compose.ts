@@ -7,9 +7,17 @@ import { renderFiles } from './renderFiles';
 import { gitInit } from './gitInit';
 
 export interface ComposerContext {
+  // Phase 0 fields
   projectName: string;
   architecture: 'hexagonal' | 'ddd' | 'modular';
   packageManager: 'npm' | 'yarn' | 'pnpm';
+
+  // Phase 2 additions (Issue #2 will fully extend buildContext to use these)
+  orm: 'typeorm' | 'prisma' | 'mikroorm';
+  database: 'postgresql' | 'mysql' | 'mongodb';
+  auth: 'jwt' | 'session' | 'none';
+  optionalModules: Array<'swagger' | 'redis' | 'bullmq' | 'websockets'>;
+  includeExampleCode: boolean;
 }
 
 export interface ComposerOptions {
@@ -18,13 +26,16 @@ export interface ComposerOptions {
   context: ComposerContext;
   /** If true, log what would be written without writing anything */
   dryRun?: boolean;
+  /** If true, skip the npm install step */
+  skipInstall?: boolean;
   skipGit?: boolean;
   verbose?: boolean;
 }
 
 /**
- * The main compose function. Orchestrates the full file generation pipeline
- * as defined in PRD-00 6.2 (Steps 1–6).
+ * The main compose function. Orchestrates the full file generation pipeline.
+ * Phase 2 extends this with ORM, auth, and optional module layers.
+ * PRD-02 §5.1–5.5
  */
 export async function compose(options: ComposerOptions): Promise<void> {
   const { outputDir, context, dryRun = false, skipGit = false, verbose = false } = options;

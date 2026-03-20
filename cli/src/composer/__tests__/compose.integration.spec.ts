@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as os from 'os';
-import { compose } from '../compose';
+import { compose, ComposerContext } from '../compose';
 
 // The templates root, relative to this test file's location in the monorepo.
 // Path: __tests__/ -> composer/ -> src/ -> cli/ -> nest-pilot/
@@ -13,6 +13,18 @@ jest.mock('../../utils/pathUtils', () => ({
   resolveTemplatesDir: () => TEMPLATES_ROOT,
   resolveOutputDir: (name: string) => path.join(os.tmpdir(), name),
 }));
+
+/** Minimal default Phase 2 context — keeps existing tests passing. */
+const defaultContext: ComposerContext = {
+  projectName: 'test-project',
+  architecture: 'hexagonal',
+  packageManager: 'npm',
+  orm: 'typeorm',
+  database: 'postgresql',
+  auth: 'jwt',
+  optionalModules: [],
+  includeExampleCode: true,
+};
 
 describe('compose() — integration test', () => {
   let outputDir: string;
@@ -30,7 +42,7 @@ describe('compose() — integration test', () => {
   it('creates the output directory', async () => {
     await compose({
       outputDir,
-      context: { projectName: 'test-project', architecture: 'hexagonal', packageManager: 'npm' },
+      context: defaultContext,
       dryRun: false,
       skipGit: true,
       verbose: false,
@@ -41,7 +53,7 @@ describe('compose() — integration test', () => {
   it('generates the .gitignore file (renamed from gitignore)', async () => {
     await compose({
       outputDir,
-      context: { projectName: 'test-project', architecture: 'hexagonal', packageManager: 'npm' },
+      context: defaultContext,
       dryRun: false,
       skipGit: true,
       verbose: false,
@@ -55,7 +67,7 @@ describe('compose() — integration test', () => {
   it('generates the .env.example file (renamed from env.example)', async () => {
     await compose({
       outputDir,
-      context: { projectName: 'test-project', architecture: 'hexagonal', packageManager: 'npm' },
+      context: defaultContext,
       dryRun: false,
       skipGit: true,
       verbose: false,
@@ -69,7 +81,7 @@ describe('compose() — integration test', () => {
   it('removes .ejs extension from output files', async () => {
     await compose({
       outputDir,
-      context: { projectName: 'test-project', architecture: 'hexagonal', packageManager: 'npm' },
+      context: defaultContext,
       dryRun: false,
       skipGit: true,
       verbose: false,
@@ -82,7 +94,7 @@ describe('compose() — integration test', () => {
   it('interpolates projectName in env/.env.example', async () => {
     await compose({
       outputDir,
-      context: { projectName: 'my-test-app', architecture: 'hexagonal', packageManager: 'npm' },
+      context: { ...defaultContext, projectName: 'my-test-app' },
       dryRun: false,
       skipGit: true,
       verbose: false,
@@ -96,7 +108,7 @@ describe('compose() — integration test', () => {
   it('does not write any files in dry run mode', async () => {
     await compose({
       outputDir,
-      context: { projectName: 'test-project', architecture: 'hexagonal', packageManager: 'npm' },
+      context: defaultContext,
       dryRun: true,
       skipGit: true,
       verbose: false,
