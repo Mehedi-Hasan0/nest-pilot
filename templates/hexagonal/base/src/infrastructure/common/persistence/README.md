@@ -13,6 +13,13 @@ This sub-layer handles the translation between our pure Domain Entities and the 
 - **Business Logic**: Never put validation or state transition rules in a Mapper or Repository.
 - **Leaking ORM Models**: Never return an `OrmEntity` from a repository; always map it back to a Domain Entity first.
 
+## The Adapter & Mapper Pattern
+
+We strictly enforce isolation by mapping ORM schemas into pure Domain Entities:
+
+1. **Adapaters**: (`UserRepositoryAdapter`) implements the `UserRepositoryPort`. It handles raw database interactions using TypeORM repositories.
+2. **Mappers**: (`UserMapper.toDomain()`, `UserMapper.toOrm()`) translate the ORM entities (e.g. `UserOrmEntity`) into the rich behavioral Domain Entities (`User`) before handing them back to the Application Layer.
+
 ## Why this boundary exists
 
 By separating the ORM from the Domain, we ensure that changes to our database schema do not force changes to our business logic. This allows us to swap TypeORM for another persistence tool (like Prisma or MikroORM) by only touching this layer.
