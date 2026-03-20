@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 <% } else if (orm === 'mikroorm') { -%>
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import mikroOrmConfig from './infrastructure/config/mikro-orm.config';
 <% } -%>
 import { validateEnv } from './infrastructure/common/config/env.validation';
 <% if (auth !== 'none') { -%>
@@ -45,7 +46,7 @@ import { CommentModule } from './infrastructure/comment/comment.module';
     // PrismaService is typically imported directly by feature modules, not here
 <% } else if (orm === 'mikroorm') { -%>
     // Database — configured async so it can inject ConfigService
-    MikroOrmModule.forRoot(),
+    MikroOrmModule.forRoot(mikroOrmConfig),
 <% } -%>
 
 <% if (auth !== 'none') { -%>

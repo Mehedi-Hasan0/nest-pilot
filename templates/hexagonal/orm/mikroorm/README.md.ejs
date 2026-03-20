@@ -1,0 +1,8 @@
+# MikroORM Integration This project is configured with **MikroORM** and **<%= database %>**. ##
+Structure MikroORM utilizes the Unit of Work (UoW) and Identity Map patterns. -
+`src/infrastructure/config/mikro-orm.config.ts`: Main ORM configuration. -
+`src/infrastructure/persistence/mikroorm/entities/`: Entities with MikroORM decorators. -
+`src/infrastructure/persistence/mikroorm/repositories/`: Native repositories bridging Domain models
+over `EntityManager`. ## Commands Run migrations: \`\`\`bash npx mikro-orm migration:up \`\`\`
+Generate a new migration: \`\`\`bash npx mikro-orm migration:create \`\`\` Sync schema (Development
+only): \`\`\`bash npx mikro-orm schema:update --run \`\`\`

@@ -1,0 +1,49 @@
+import { Injectable } from '@nestjs/common';
+import { EntityManager, EntityRepository } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { UserRepositoryPort } from '../../../../domain/user/ports/user.repository.port';
+import { User } from '../../../../domain/user/entities/user.entity';
+import { UserOrmEntity } from '../entities/user.entity';
+
+@Injectable()
+export class MikroOrmUserRepository implements UserRepositoryPort {
+  constructor(
+    private readonly em: EntityManager,
+    @InjectRepository(UserOrmEntity)
+    private readonly repository: EntityRepository<UserOrmEntity>,
+  ) {}
+
+  public async save(user: User): Promise<void> {
+    const ormEntity = this.repository.create({
+      id: user.id,
+      email: user.email,
+      password: user.password,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    });
+    // upsert is native to MikroORM Unit of Work
+    await this.em.upsert(ormEntity);
+    await this.em.flush();
+  }
+
+  public async findById(id: string): Promise<User | null> {
+    const record = await this.repository.findOne({ id });
+    if (!record) return null;
+    return new User(record.id, record.email, record.password, record.createdAt, record.updatedAt);
+  }
+
+  public async exists(email: string): Promise<boolean> {
+    const count = await this.repository.count({ email });
+    return count > 0;
+  }
+
+  public async findByEmail(email: string): Promise<User | null> {
+    const record = await this.repository.findOne({ email });
+    if (!record) return null;
+    return new User(record.id, record.email, record.password, record.createdAt, record.updatedAt);
+  }
+
+  public async delete(id: string): Promise<void> {
+    await this.repository.nativeDelete({ id });
+  }
+}

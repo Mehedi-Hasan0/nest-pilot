@@ -1,0 +1,33 @@
+import { Injectable } from '@nestjs/common';
+import { EntityManager, EntityRepository } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { CommentRepositoryPort } from '../../../../domain/comment/ports/comment.repository.port';
+import { Comment } from '../../../../domain/comment/entities/comment.entity';
+import { CommentOrmEntity } from '../entities/comment.entity';
+
+@Injectable()
+export class MikroOrmCommentRepository implements CommentRepositoryPort {
+  constructor(
+    private readonly em: EntityManager,
+    @InjectRepository(CommentOrmEntity)
+    private readonly repository: EntityRepository<CommentOrmEntity>,
+  ) {}
+
+  public async save(comment: Comment): Promise<void> {
+    const ormEntity = this.repository.create({
+      id: comment.id,
+      text: comment.text,
+      author: comment.authorId,
+      post: comment.postId,
+      createdAt: comment.createdAt,
+    });
+    await this.em.upsert(ormEntity);
+    await this.em.flush();
+  }
+
+  public async findById(id: string): Promise<Comment | null> {
+    const record = await this.repository.findOne({ id });
+    if (!record) return null;
+    return new Comment(record.id, record.text, record.author.id || record.author as unknown as string, record.post.id || record.post as unknown as string, record.createdAt);
+  }
+}
