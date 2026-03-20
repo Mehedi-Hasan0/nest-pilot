@@ -1,0 +1,20 @@
+// TypeORM database config for <%= database %>
+// Handled by TypeOrmModule.forRootAsync in app.module.ts
+// Use this space for any extensive or complex datasource migrations configuration
+
+import { DataSource, DataSourceOptions } from 'typeorm';
+
+export const dataSourceOptions: DataSourceOptions = {
+  type: '<%= databaseDriver === "pg" ? "postgres" : databaseDriver %>',
+  host: process.env.DATABASE_HOST || 'localhost',
+  port: parseInt(process.env.DATABASE_PORT || '<%= databasePort %>', 10),
+  username: process.env.DATABASE_USER || 'postgres',
+  password: process.env.DATABASE_PASSWORD || 'postgres',
+  database: process.env.DATABASE_NAME || '<%= projectNameConstant %>_db',
+  entities: [__dirname + '/../persistence/typeorm/entities/*.orm-entity{.ts,.js}'],
+  migrations: [__dirname + '/../persistence/typeorm/migrations/*{.ts,.js}'],
+  synchronize: false, // Strongly recommended to use migrations in production
+};
+
+const dataSource = new DataSource(dataSourceOptions);
+export default dataSource;

@@ -1,0 +1,9 @@
+# TypeORM Integration This project is configured with **TypeORM** and **<%= database %>**. ##
+Structure - `src/infrastructure/persistence/typeorm/entities/`: TypeORM specific `@Entity()`
+definitions - `src/infrastructure/persistence/typeorm/repositories/`: Implements domain ports using
+TypeORM's `Repository` - `src/infrastructure/persistence/typeorm/mappers/`: Transforms ORM entities
+to/from Domain entities - `src/infrastructure/config/database.config.ts`: TypeORM data source
+configuration for CLI migrations ## Commands Run migrations: \`\`\`bash npm run typeorm
+migration:run -- -d src/infrastructure/config/database.config.ts \`\`\` Generate a new migration:
+\`\`\`bash npm run typeorm migration:generate -- -d src/infrastructure/config/database.config.ts -n
+migration_name \`\`\`
