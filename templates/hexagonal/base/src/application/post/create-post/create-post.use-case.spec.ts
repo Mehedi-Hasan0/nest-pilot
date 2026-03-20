@@ -1,10 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreatePostUseCase } from './create-post.use-case';
-import { POST_REPOSITORY_PORT } from '../../../domain/post/ports/post.repository.port';
+import {
+  POST_REPOSITORY_PORT,
+  PostRepositoryPort,
+} from '../../../domain/post/ports/post.repository.port';
 
 describe('CreatePostUseCase', () => {
   let useCase: CreatePostUseCase;
-  let postRepo: any;
+
+  /**
+   * Educational Note (PRD 8.2):
+   * Mocks must be strictly typed against the Port interface (`PostRepositoryPort`),
+   * never against a concrete implementation (adapter) or `any`.
+   */
+  let postRepo: jest.Mocked<Pick<PostRepositoryPort, 'save'>>;
 
   beforeEach(async () => {
     postRepo = {

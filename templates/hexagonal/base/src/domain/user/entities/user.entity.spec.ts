@@ -1,6 +1,6 @@
 import { User } from './user.entity';
 import { Email } from '../value-objects/email.vo';
-import { InvalidNameError } from '../errors/user.errors';
+import { InvalidNameError, EmailAlreadySetError } from '../errors/user.errors';
 
 describe('User Entity', () => {
   it('should create a valid user', () => {
@@ -34,5 +34,32 @@ describe('User Entity', () => {
 
     expect(user.id.value).toBe(id);
     expect(user.name).toBe(name);
+  });
+
+  describe('changeEmail', () => {
+    it('should successfully change email when provided a new one', () => {
+      const user = User.create({
+        email: Email.create('old@example.com'),
+        name: 'Test User',
+        passwordHash: 'hashed-password',
+      });
+
+      const newEmail = Email.create('new@example.com');
+      user.changeEmail(newEmail);
+
+      expect(user.email.value).toBe('new@example.com');
+    });
+
+    it('should throw EmailAlreadySetError if changing to the exact same email', () => {
+      const user = User.create({
+        email: Email.create('same@example.com'),
+        name: 'Test User',
+        passwordHash: 'hashed-password',
+      });
+
+      const sameEmail = Email.create('same@example.com');
+
+      expect(() => user.changeEmail(sameEmail)).toThrow(EmailAlreadySetError);
+    });
   });
 });

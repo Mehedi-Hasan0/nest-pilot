@@ -1,12 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { RegisterUserUseCase } from './register-user.use-case';
-import { USER_REPOSITORY_PORT } from '../../../domain/user/ports/user.repository.port';
+import {
+  USER_REPOSITORY_PORT,
+  UserRepositoryPort,
+} from '../../../domain/user/ports/user.repository.port';
 import { RegisterUserCommand } from './register-user.command';
-import { User } from '../../../domain/user/entities/user.entity';
 
 describe('RegisterUserUseCase', () => {
   let useCase: RegisterUserUseCase;
-  let repository: any;
+
+  /**
+   * Educational Note (PRD 8.2):
+   * Mocks must be strictly typed against the Port interface (`UserRepositoryPort`),
+   * never against a concrete implementation (adapter) or `any`. This proves the
+   * Application layer conforms to the Hexagonal boundary.
+   */
+  let repository: jest.Mocked<Pick<UserRepositoryPort, 'exists' | 'save'>>;
 
   beforeEach(async () => {
     repository = {
@@ -35,7 +44,7 @@ describe('RegisterUserUseCase', () => {
     };
 
     repository.exists.mockResolvedValue(false);
-    repository.save.mockImplementation((user: User) => Promise.resolve(user));
+    repository.save.mockResolvedValue();
 
     const result = await useCase.execute(command);
 

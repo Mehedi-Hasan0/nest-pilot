@@ -14,4 +14,20 @@ describe('Email Value Object', () => {
     const email = Email.create('TEST@EXAMPLE.COM');
     expect(email.value).toBe('test@example.com');
   });
+
+  describe('equals', () => {
+    it('should return true if both emails have the same normalized string', () => {
+      const email1 = Email.create('test@example.com');
+      const email2 = Email.create('TEST@EXAMPLE.com');
+
+      expect(email1.equals(email2)).toBe(true);
+    });
+
+    it('should return false if emails are different', () => {
+      const email1 = Email.create('foo@example.com');
+      const email2 = Email.create('bar@example.com');
+
+      expect(email1.equals(email2)).toBe(false);
+    });
+  });
 });

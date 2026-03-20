@@ -8,7 +8,7 @@ import { resolveTemplatesDir } from '../utils/pathUtils';
  * In Phase 0, only the shared template directory is returned.
  * Subsequent phases will return [shared/, hexagonal/base/, hexagonal/orm/typeorm/, ...]
  *
- * PRD-00 §6.2 Step 1
+ * PRD-00 6.2 Step 1
  */
 export function resolveSourcePaths(architecture: 'hexagonal' | 'ddd' | 'modular'): string[] {
   const templatesDir = resolveTemplatesDir();
