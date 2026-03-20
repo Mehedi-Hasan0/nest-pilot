@@ -3,9 +3,11 @@ import { PostRepositoryPort } from '../../../domain/post/ports/post.repository.p
 import {
   PostNotFoundError,
   InvalidPostStateTransitionError,
+  UnauthorizedPostActionError,
 } from '../../../domain/post/errors/post.errors';
 import { PostResponseDto } from '../common/post-response.dto';
 import { Post, PostStatus } from '../../../domain/post/entities/post.entity';
+import { PublishPostCommand } from './publish-post.command';
 
 describe('PublishPostUseCase', () => {
   let useCase: PublishPostUseCase;
@@ -44,7 +46,11 @@ describe('PublishPostUseCase', () => {
       mockPostRepository.save.mockResolvedValue();
 
       // Act
-      const result = await useCase.execute('123e4567-e89b-12d3-a456-426614174000');
+      const command = new PublishPostCommand(
+        '123e4567-e89b-12d3-a456-426614174000',
+        '550e8400-e29b-41d4-a716-446655440000',
+      );
+      const result = await useCase.execute(command);
 
       // Assert
       expect(mockPostRepository.findById).toHaveBeenCalledWith(
@@ -61,9 +67,39 @@ describe('PublishPostUseCase', () => {
       mockPostRepository.findById.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(useCase.execute('223e4567-e89b-12d3-a456-426614174000')).rejects.toThrow(
+      const command = new PublishPostCommand(
+        '223e4567-e89b-12d3-a456-426614174000',
+        '550e8400-e29b-41d4-a716-446655440000',
+      );
+      await expect(useCase.execute(command)).rejects.toThrow(
         new PostNotFoundError('223e4567-e89b-12d3-a456-426614174000'),
       );
+      expect(mockPostRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('should throw UnauthorizedPostActionError if the requesting user is not the author', async () => {
+      // Arrange
+      const draftPost = Post.reconstitute(
+        '123e4567-e89b-12d3-a456-426614174000',
+        {
+          title: 'Draft Title',
+          content: 'Some draft content',
+          authorId: '550e8400-e29b-41d4-a716-446655440000',
+          status: PostStatus.DRAFT,
+        },
+        new Date(),
+        new Date(),
+      );
+
+      mockPostRepository.findById.mockResolvedValue(draftPost);
+
+      // Act & Assert
+      const command = new PublishPostCommand(
+        '123e4567-e89b-12d3-a456-426614174000',
+        '999e4567-e89b-12d3-a456-426614174000', // Different user
+      );
+
+      await expect(useCase.execute(command)).rejects.toThrow(UnauthorizedPostActionError);
       expect(mockPostRepository.save).not.toHaveBeenCalled();
     });
 
@@ -85,7 +121,11 @@ describe('PublishPostUseCase', () => {
 
       // Act & Assert
       // The entity itself throws this domain error
-      await expect(useCase.execute('123e4567-e89b-12d3-a456-426614174000')).rejects.toThrow(
+      const command = new PublishPostCommand(
+        '123e4567-e89b-12d3-a456-426614174000',
+        '550e8400-e29b-41d4-a716-446655440000',
+      );
+      await expect(useCase.execute(command)).rejects.toThrow(
         new InvalidPostStateTransitionError('PUBLISHED', 'PUBLISHED'),
       );
 

@@ -2,6 +2,7 @@ import { Controller, Post, Body, Get, Param, HttpCode } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { RegisterUserUseCase } from '../../../application/user/register-user/register-user.use-case';
 import { GetUserProfileUseCase } from '../../../application/user/get-user-profile/get-user-profile.use-case';
+import { GetUserProfileQuery } from '../../../application/user/get-user-profile/get-user-profile.query';
 import { RegisterUserRequestDto } from './dto/register-user.request.dto';
 import { RegisterUserCommand } from '../../../application/user/register-user/register-user.command';
 import { Public } from '../../common/auth/public.decorator';
@@ -32,7 +33,7 @@ export class UserController {
   @ApiOperation({ summary: 'Get user profile by ID' })
   @ApiResponse({ status: 200, description: 'User profile returned successfully' })
   public async getUserProfile(@Param('id') id: string): Promise<UserHttpResponse> {
-    const result = await this.getUserProfileUseCase.execute(id);
+    const result = await this.getUserProfileUseCase.execute(new GetUserProfileQuery(id));
     return UserPresenter.toResponse(result);
   }
 }

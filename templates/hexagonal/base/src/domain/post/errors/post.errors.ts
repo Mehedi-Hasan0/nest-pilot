@@ -1,5 +1,11 @@
 import { DomainError } from '../../common/domain.error';
 
+export class UnauthorizedPostActionError extends DomainError {
+  constructor() {
+    super('You do not have permission to perform this action on this post.');
+  }
+}
+
 export class PostNotFoundError extends DomainError {
   constructor(id: string) {
     super(`Post with ID ${id} was not found.`);
