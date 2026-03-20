@@ -64,7 +64,10 @@ All example code is built around a **Blog platform** with three entities:
 
 ## 3. Complete Folder Structure
 
-The following is the exact folder and file structure that the hexagonal template must produce. Every file listed here must be implemented.
+The following is the initial conceptual folder and file structure that the hexagonal template produces. Every file listed here must be implemented.
+
+> [!NOTE]
+> **Per-Entity Module Grouping:** While the tree below illustrates a flat `infrastructure/persistence` structure, the generated template implements a **per-entity module grouping** (e.g., `infrastructure/user/persistence`, `infrastructure/user/http`). This is the preferred layout as it scales significantly better to per-feature NestJS Dependency Injection boundaries.
 
 ```
 src/
@@ -205,6 +208,7 @@ These rules must be enforced both through convention (documented in READMEs) and
 3. **No infrastructure concepts.** No HTTP status codes, no request/response objects.
 4. **No direct dependencies on the application or infrastructure layers.**
 5. **All business rules live here**, nowhere else.
+6. **Domain Errors Basis:** A shared `DomainError` base class exists in `domain/common/domain.error.ts`. All specific domain exceptions must extend this base class to allow ergonomic, unified catching at the infrastructure boundary.
 
 ### 4.2 Entity Specifications
 
@@ -249,7 +253,7 @@ All value objects must:
 - Implement an `equals(other: ThisType): boolean` method
 - Not extend any base class (to keep them pure TypeScript)
 
-**`email.vo.ts`** — Validates email format via regex. The regex used must be documented with a comment explaining its limitations.
+**`email.vo.ts`** — Validates email format via regex. Normalizes the value to lowercase at construction time to prevent structural mismatches. The regex used must be documented with a comment explaining its limitations.
 
 **`post-title.vo.ts`** — Must be between 3 and 200 characters. Must trim whitespace at construction. Must preserve the trimmed value.
 
@@ -504,18 +508,21 @@ export class UserPresenter {
 A global exception filter must catch domain errors and map them to HTTP status codes:
 
 ```typescript
-@Catch()
+import { DomainError } from '../../domain/common/domain.error';
+
+@Catch(DomainError)
 export class DomainExceptionFilter implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: DomainError, host: ArgumentsHost) {
+    // Base discrimination on exception.name:
     // UserNotFoundError, PostNotFoundError → 404
-    // EmailAlreadyInUseError → 409
-    // InvalidEmailError → 400
+    // *AlreadyInUseError* → 409
+    // InvalidEmailError, Invalid*Error → 400
     // All other errors → 500
   }
 }
 ```
 
-This is where the typed domain errors pay off. The filter can `instanceof` check each domain error type and return the correct HTTP status code without any string matching.
+This is where the typed domain errors and unified base class pay off. The filter can elegantly catch the `DomainError` superclass and assign correct HTTP status codes dynamically.
 
 ### 6.3 Auth Sublayer
 
@@ -677,7 +684,7 @@ Application layer tests must:
 
 - Mock the repository port (the interface), not the TypeORM implementation
 - Use Jest's manual mock factory: `jest.fn()` on each port method
-- Not spin up a NestJS application
+- Using NestJS's `Test.createTestingModule` is acceptable to inject the use case, provided the test does not spin up a real database or HTTP server
 
 **`register-user.use-case.spec.ts`** — must test:
 
