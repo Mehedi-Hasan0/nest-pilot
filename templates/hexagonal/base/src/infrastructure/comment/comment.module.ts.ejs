@@ -1,0 +1,43 @@
+import { Module } from '@nestjs/common';
+<% if (orm === 'typeorm') { -%>
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommentOrmEntity } from '../persistence/typeorm/entities/comment.orm-entity';
+import { CommentRepositoryAdapter } from '../persistence/typeorm/repositories/typeorm-comment.repository';
+<% } else if (orm === 'prisma') { -%>
+import { PrismaCommentRepository } from '../persistence/prisma/repositories/prisma-comment.repository';
+<% } else if (orm === 'mikroorm') { -%>
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { CommentOrmEntity } from '../persistence/mikroorm/entities/comment.orm-entity';
+import { MikroOrmCommentRepository } from '../persistence/mikroorm/repositories/mikroorm-comment.repository';
+<% } -%>
+import { COMMENT_REPOSITORY_PORT } from '../../domain/comment/ports/comment.repository.port';
+import { AddCommentUseCase } from '../../application/comment/add-comment/add-comment.use-case';
+import { CommentController } from './http/comment.controller';
+import { UserModule } from '../user/user.module';
+import { PostModule } from '../post/post.module';
+
+@Module({
+<% if (orm === 'typeorm') { -%>
+  imports: [TypeOrmModule.forFeature([CommentOrmEntity]), UserModule, PostModule],
+<% } else if (orm === 'mikroorm') { -%>
+  imports: [MikroOrmModule.forFeature([CommentOrmEntity]), UserModule, PostModule],
+<% } else { -%>
+  imports: [UserModule, PostModule],
+<% } -%>
+  controllers: [CommentController],
+  providers: [
+    AddCommentUseCase,
+    {
+      provide: COMMENT_REPOSITORY_PORT,
+<% if (orm === 'typeorm') { -%>
+      useClass: CommentRepositoryAdapter,
+<% } else if (orm === 'prisma') { -%>
+      useClass: PrismaCommentRepository,
+<% } else if (orm === 'mikroorm') { -%>
+      useClass: MikroOrmCommentRepository,
+<% } -%>
+    },
+  ],
+  exports: [COMMENT_REPOSITORY_PORT, AddCommentUseCase],
+})
+export class CommentModule {}

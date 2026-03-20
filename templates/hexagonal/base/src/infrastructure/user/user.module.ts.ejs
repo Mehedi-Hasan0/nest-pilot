@@ -1,0 +1,43 @@
+import { Module } from '@nestjs/common';
+<% if (orm === 'typeorm') { -%>
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserOrmEntity } from '../persistence/typeorm/entities/user.orm-entity';
+import { UserRepositoryAdapter } from '../persistence/typeorm/repositories/typeorm-user.repository';
+<% } else if (orm === 'prisma') { -%>
+import { PrismaUserRepository } from '../persistence/prisma/repositories/prisma-user.repository';
+<% } else if (orm === 'mikroorm') { -%>
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { UserOrmEntity } from '../persistence/mikroorm/entities/user.orm-entity';
+import { MikroOrmUserRepository } from '../persistence/mikroorm/repositories/mikroorm-user.repository';
+<% } -%>
+import { USER_REPOSITORY_PORT } from '../../domain/user/ports/user.repository.port';
+import { RegisterUserUseCase } from '../../application/user/register-user/register-user.use-case';
+import { GetUserProfileUseCase } from '../../application/user/get-user-profile/get-user-profile.use-case';
+import { UserController } from './http/user.controller';
+
+@Module({
+<% if (orm === 'typeorm') { -%>
+  imports: [TypeOrmModule.forFeature([UserOrmEntity])],
+<% } else if (orm === 'mikroorm') { -%>
+  imports: [MikroOrmModule.forFeature([UserOrmEntity])],
+<% } else { -%>
+  imports: [],
+<% } -%>
+  controllers: [UserController],
+  providers: [
+    RegisterUserUseCase,
+    GetUserProfileUseCase,
+    {
+      provide: USER_REPOSITORY_PORT,
+<% if (orm === 'typeorm') { -%>
+      useClass: UserRepositoryAdapter,
+<% } else if (orm === 'prisma') { -%>
+      useClass: PrismaUserRepository,
+<% } else if (orm === 'mikroorm') { -%>
+      useClass: MikroOrmUserRepository,
+<% } -%>
+    },
+  ],
+  exports: [USER_REPOSITORY_PORT, RegisterUserUseCase, GetUserProfileUseCase],
+})
+export class UserModule {}

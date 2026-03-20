@@ -1,0 +1,45 @@
+import { Module } from '@nestjs/common';
+<% if (orm === 'typeorm') { -%>
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PostOrmEntity } from '../persistence/typeorm/entities/post.orm-entity';
+import { PostRepositoryAdapter } from '../persistence/typeorm/repositories/typeorm-post.repository';
+<% } else if (orm === 'prisma') { -%>
+import { PrismaPostRepository } from '../persistence/prisma/repositories/prisma-post.repository';
+<% } else if (orm === 'mikroorm') { -%>
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { PostOrmEntity } from '../persistence/mikroorm/entities/post.orm-entity';
+import { MikroOrmPostRepository } from '../persistence/mikroorm/repositories/mikroorm-post.repository';
+<% } -%>
+import { POST_REPOSITORY_PORT } from '../../domain/post/ports/post.repository.port';
+import { CreatePostUseCase } from '../../application/post/create-post/create-post.use-case';
+import { PublishPostUseCase } from '../../application/post/publish-post/publish-post.use-case';
+import { GetPostUseCase } from '../../application/post/get-post/get-post.use-case';
+import { PostController } from './http/post.controller';
+
+@Module({
+<% if (orm === 'typeorm') { -%>
+  imports: [TypeOrmModule.forFeature([PostOrmEntity])],
+<% } else if (orm === 'mikroorm') { -%>
+  imports: [MikroOrmModule.forFeature([PostOrmEntity])],
+<% } else { -%>
+  imports: [],
+<% } -%>
+  controllers: [PostController],
+  providers: [
+    CreatePostUseCase,
+    PublishPostUseCase,
+    GetPostUseCase,
+    {
+      provide: POST_REPOSITORY_PORT,
+<% if (orm === 'typeorm') { -%>
+      useClass: PostRepositoryAdapter,
+<% } else if (orm === 'prisma') { -%>
+      useClass: PrismaPostRepository,
+<% } else if (orm === 'mikroorm') { -%>
+      useClass: MikroOrmPostRepository,
+<% } -%>
+    },
+  ],
+  exports: [POST_REPOSITORY_PORT, CreatePostUseCase, PublishPostUseCase, GetPostUseCase],
+})
+export class PostModule {}

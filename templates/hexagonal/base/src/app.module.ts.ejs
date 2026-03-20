@@ -1,0 +1,64 @@
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+<% if (orm === 'typeorm') { -%>
+import { TypeOrmModule } from '@nestjs/typeorm';
+<% } else if (orm === 'mikroorm') { -%>
+import { MikroOrmModule } from '@mikro-orm/nestjs';
+<% } -%>
+import { validateEnv } from './infrastructure/common/config/env.validation';
+<% if (auth !== 'none') { -%>
+import { AuthModule } from './infrastructure/common/auth/auth.module';
+<% } -%>
+<% if (includeExampleCode) { -%>
+import { UserModule } from './infrastructure/user/user.module';
+import { PostModule } from './infrastructure/post/post.module';
+import { CommentModule } from './infrastructure/comment/comment.module';
+<% } -%>
+
+@Module({
+  imports: [
+    // Configuration — must be first so all other modules can inject ConfigService
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: validateEnv,
+    }),
+
+<% if (orm === 'typeorm') { -%>
+    // Database — configured async so it can inject ConfigService
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        type: '<%= databaseDriver === "pg" ? "postgres" : databaseDriver %>',
+        host: configService.get<string>('DATABASE_HOST'),
+        port: configService.get<number>('DATABASE_PORT'),
+        username: configService.get<string>('DATABASE_USER'),
+        password: configService.get<string>('DATABASE_PASSWORD'),
+        database: configService.get<string>('DATABASE_NAME'),
+        entities: [__dirname + '/**/*.orm-entity{.ts,.js}'],
+        // Synchronize should be completely disabled in production!
+        synchronize: configService.get<string>('NODE_ENV') !== 'production',
+        logging: configService.get<string>('NODE_ENV') === 'development',
+      }),
+      inject: [ConfigService],
+    }),
+<% } else if (orm === 'prisma') { -%>
+    // PrismaService is typically imported directly by feature modules, not here
+<% } else if (orm === 'mikroorm') { -%>
+    // Database — configured async so it can inject ConfigService
+    MikroOrmModule.forRoot(),
+<% } -%>
+
+<% if (auth !== 'none') { -%>
+    // Authentication — protects routes by default
+    AuthModule,
+<% } -%>
+
+<% if (includeExampleCode) { -%>
+    // Domain Feature Modules
+    UserModule,
+    PostModule,
+    CommentModule,
+<% } -%>
+  ],
+})
+export class AppModule {}
