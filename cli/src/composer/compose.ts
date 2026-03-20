@@ -24,7 +24,7 @@ export interface ComposerOptions {
 
 /**
  * The main compose function. Orchestrates the full file generation pipeline
- * as defined in PRD-00 §6.2 (Steps 1–6).
+ * as defined in PRD-00 6.2 (Steps 1–6).
  */
 export async function compose(options: ComposerOptions): Promise<void> {
   const { outputDir, context, dryRun = false, skipGit = false, verbose = false } = options;

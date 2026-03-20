@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 
 /**
- * JWT payload shape as defined by PRD §9 (payload minimalism).
+ * JWT payload shape as defined by PRD 9 (payload minimalism).
  * The token contains only the user ID — no PII like email or display name.
  * If additional user data is needed after authentication, it is fetched
  * from the database using the userId from this payload.

@@ -18,7 +18,7 @@ export const authConfig = registerAs('auth', () => ({
    * Accepts zeit/ms strings: '7d', '24h', '60m', etc.
    * Default: '7d' (safe for most web apps; shorten for high-security contexts).
    *
-   * PRD §9: Must be configurable via environment variable.
+   * PRD 9: Must be configurable via environment variable.
    */
   jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? '7d',
 }));

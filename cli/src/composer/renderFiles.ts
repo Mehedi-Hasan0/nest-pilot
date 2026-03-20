@@ -14,12 +14,12 @@ export interface RenderFilesOptions {
 /**
  * Walks the resolved source paths, renders EJS templates, and writes to outputDir.
  *
- * PRD-00 §6.2 Step 3:
+ * PRD-00 6.2 Step 3:
  * - .ejs files → render through EJS → write without .ejs extension
  * - Other files → copy unchanged
  * - Directory structure is preserved relative to source root
  *
- * PRD-00 §6.2 Step 4:
+ * PRD-00 6.2 Step 4:
  * - Apply filename renames (gitignore → .gitignore, etc.)
  */
 export async function renderFiles(options: RenderFilesOptions): Promise<void> {

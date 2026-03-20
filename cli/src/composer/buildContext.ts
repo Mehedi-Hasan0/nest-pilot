@@ -15,7 +15,7 @@ export interface EjsContext extends Record<string, string> {
  * This is the single source of truth for template variable derivation.
  * No logic is allowed inside .ejs templates — only variable references.
  *
- * PRD-00 §6.2 Step 2
+ * PRD-00 6.2 Step 2
  */
 export function buildContext(answers: ComposerContext): EjsContext {
   return {
