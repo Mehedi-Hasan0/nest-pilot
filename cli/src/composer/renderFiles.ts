@@ -6,7 +6,7 @@ import { applyFilenameRenames } from './applyFilenameRenames';
 export interface RenderFilesOptions {
   sourcePaths: string[];
   outputDir: string;
-  context: Record<string, string>;
+  context: Record<string, unknown>;
   dryRun: boolean;
   verbose: boolean;
 }
@@ -35,7 +35,7 @@ async function walkAndRender(
   rootSourcePath: string,
   currentPath: string,
   outputDir: string,
-  context: Record<string, string>,
+  context: Record<string, unknown>,
   dryRun: boolean,
   verbose: boolean,
 ): Promise<void> {
@@ -88,7 +88,7 @@ async function walkAndRender(
   if (currentPath.endsWith('.ejs')) {
     // Render EJS template
     try {
-      const rendered = await ejs.renderFile(currentPath, context, { async: true });
+      const rendered = await ejs.renderFile(currentPath, context as ejs.Data, { async: true });
       await fs.writeFile(outputFilePath, rendered, 'utf-8');
     } catch (error: unknown) {
       const ejsError = error as Error;
