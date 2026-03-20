@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+<% if (databaseDriver === 'mongodb') { -%>
+  provider = "mongodb"
+<% } else { -%>
+  provider = "<%= databaseDriver %>"
+<% } -%>
+  url      = env("DATABASE_URL")
+}
+
+model User {
+<% if (databaseDriver === 'mongodb') { -%>
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+<% } else { -%>
+  id        String   @id @default(uuid()) @db.Uuid
+<% } -%>
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  posts     Post[]
+  comments  Comment[]
+
+  @@map("users")
+}
+
+model Post {
+<% if (databaseDriver === 'mongodb') { -%>
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+<% } else { -%>
+  id        String   @id @default(uuid()) @db.Uuid
+<% } -%>
+  title     String
+  content   String
+  authorId  String<% if (databaseDriver === 'mongodb') { %>   @db.ObjectId<% } else { %>     @db.Uuid<% } %>
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  comments  Comment[]
+
+  @@map("posts")
+}
+
+model Comment {
+<% if (databaseDriver === 'mongodb') { -%>
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+<% } else { -%>
+  id        String   @id @default(uuid()) @db.Uuid
+<% } -%>
+  text      String
+  authorId  String<% if (databaseDriver === 'mongodb') { %>   @db.ObjectId<% } else { %>     @db.Uuid<% } %>
+  author    User     @relation(fields: [authorId], references: [id])
+  postId    String<% if (databaseDriver === 'mongodb') { %>   @db.ObjectId<% } else { %>     @db.Uuid<% } %>
+  post      Post     @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@map("comments")
+}

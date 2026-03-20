@@ -1,0 +1,9 @@
+# Prisma Integration This project is configured with **Prisma ORM** connecting to a **<%= database
+%>** database. ## Structure - `prisma/schema.prisma`: The central schema containing your models,
+generator config, and datasource. - `src/infrastructure/persistence/prisma/prisma.service.ts`: The
+central service exposing the Prisma Client instance. -
+`src/infrastructure/persistence/prisma/repositories/`: Native Prisma repositories fulfilling the
+domain ports. ## Commands Run Prisma Studio to view your database UI: \`\`\`bash npx prisma studio
+\`\`\` Push schema changes directly to the database (good for rapid prototyping): \`\`\`bash npx
+prisma db push \`\`\` Generate local Prisma Client models: \`\`\`bash npx prisma generate \`\`\`
+Create a migration (production best practice): \`\`\`bash npx prisma migrate dev --name init \`\`\`

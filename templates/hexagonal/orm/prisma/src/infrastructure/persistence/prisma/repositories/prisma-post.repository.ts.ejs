@@ -1,0 +1,37 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma.service';
+import { PostRepositoryPort } from '../../../../domain/post/ports/post.repository.port';
+import { Post } from '../../../../domain/post/entities/post.entity';
+
+@Injectable()
+export class PrismaPostRepository implements PostRepositoryPort {
+  constructor(private readonly prisma: PrismaService) {}
+
+  public async save(post: Post): Promise<void> {
+    await this.prisma.post.upsert({
+      where: { id: post.id },
+      update: {
+        title: post.title,
+        content: post.content,
+      },
+      create: {
+        id: post.id,
+        title: post.title,
+        content: post.content,
+        authorId: post.authorId,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      },
+    });
+  }
+
+  public async findById(id: string): Promise<Post | null> {
+    const record = await this.prisma.post.findUnique({ where: { id } });
+    if (!record) return null;
+    return new Post(record.id, record.title, record.content, record.authorId, record.createdAt, record.updatedAt);
+  }
+
+  public async delete(id: string): Promise<void> {
+    await this.prisma.post.delete({ where: { id } });
+  }
+}
