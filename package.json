@@ -1,5 +1,6 @@
 {
   "name": "nest-pilot",
+  "version": "0.2.1",
   "private": true,
   "license": "MIT",
   "workspaces": [
@@ -62,5 +63,8 @@
     "typescript": "~5.5.0",
     "uuid": "^10.0.0",
     "zod": "^4.3.6"
+  },
+  "overrides": {
+    "tar": "^7.5.12"
   }
 }
