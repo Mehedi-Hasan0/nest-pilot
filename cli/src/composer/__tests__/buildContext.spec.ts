@@ -1,36 +1,37 @@
 import { buildContext, toPascalCase, toConstantCase } from '../buildContext';
+import { ComposerContext } from '../compose';
+
+/** Minimal Phase 2 context to satisfy the full ComposerContext interface. */
+const baseContext: ComposerContext = {
+  projectName: 'my-app',
+  architecture: 'hexagonal',
+  packageManager: 'npm',
+  orm: 'typeorm',
+  database: 'postgresql',
+  auth: 'jwt',
+  optionalModules: [],
+  includeExampleCode: true,
+};
 
 describe('buildContext()', () => {
   it('passes projectName through unchanged', () => {
-    const ctx = buildContext({
-      projectName: 'my-app',
-      architecture: 'hexagonal',
-      packageManager: 'npm',
-    });
+    const ctx = buildContext(baseContext);
     expect(ctx.projectName).toBe('my-app');
   });
 
   it('derives projectNamePascalCase correctly', () => {
-    const ctx = buildContext({
-      projectName: 'my-cool-app',
-      architecture: 'hexagonal',
-      packageManager: 'npm',
-    });
+    const ctx = buildContext({ ...baseContext, projectName: 'my-cool-app' });
     expect(ctx.projectNamePascalCase).toBe('MyCoolApp');
   });
 
   it('derives projectNameConstant correctly', () => {
-    const ctx = buildContext({
-      projectName: 'my-cool-app',
-      architecture: 'hexagonal',
-      packageManager: 'npm',
-    });
+    const ctx = buildContext({ ...baseContext, projectName: 'my-cool-app' });
     expect(ctx.projectNameConstant).toBe('MY_COOL_APP');
   });
 
   it('includes the current year', () => {
     const ctx = buildContext({
-      projectName: 'app',
+      ...baseContext,
       architecture: 'modular',
       packageManager: 'pnpm',
     });

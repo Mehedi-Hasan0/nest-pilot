@@ -13,21 +13,34 @@ export function createCommand(): Command {
     .description('Create a new NestJS project')
     .argument('[project-name]', 'Name of the project to create')
     .option('--dry-run', 'Preview what will be generated without writing to disk')
+    .option('--skip-install', 'Skip the npm install step')
     .option('--skip-git', 'Skip the git init step')
-    .option('--defaults', 'Skip prompts and use default options')
+    .option(
+      '--defaults',
+      'Skip all prompts and use sensible defaults (Hexagonal, TypeORM, PostgreSQL, JWT, npm)',
+    )
     .option('--verbose', 'Print each file path as it is written')
     .action(async (projectNameArg: string | undefined, options) => {
       try {
         const answers = await runCreatePrompts(projectNameArg, options.defaults);
 
         if (!answers) {
-          // User cancelled
+          // User cancelled — exit 0 (it's a choice, not an error)
           process.exit(0);
         }
 
-        const { projectName, architecture, packageManager } = answers;
+        const {
+          projectName,
+          architecture,
+          includeExampleCode,
+          orm,
+          database,
+          auth,
+          optionalModules,
+          packageManager,
+        } = answers;
 
-        // Validate
+        // Validate project name
         const nameError = validateProjectName(projectName);
         if (nameError) {
           console.error(chalk.red(`✖ ${nameError}`));
@@ -40,7 +53,8 @@ export function createCommand(): Command {
         if (fs.existsSync(outputDir) && !options.defaults) {
           const { confirm } = await import('@clack/prompts');
           const shouldOverwrite = await confirm({
-            message: `Directory "${projectName}" already exists. Overwrite?`,
+            message: `A directory named "${projectName}" already exists. Overwrite?`,
+            initialValue: false,
           });
           if (!shouldOverwrite) {
             console.log(chalk.yellow('Cancelled.'));
@@ -53,9 +67,15 @@ export function createCommand(): Command {
           context: {
             projectName,
             architecture,
+            includeExampleCode,
+            orm,
+            database,
+            auth,
+            optionalModules,
             packageManager,
           },
           dryRun: options.dryRun ?? false,
+          skipInstall: options.skipInstall ?? false,
           skipGit: options.skipGit ?? false,
           verbose: options.verbose ?? false,
         });
