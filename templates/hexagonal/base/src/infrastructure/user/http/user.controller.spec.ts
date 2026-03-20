@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { RegisterUserUseCase } from '../../../application/user/register-user/register-user.use-case';
 import { GetUserProfileUseCase } from '../../../application/user/get-user-profile/get-user-profile.use-case';
+import { GetUserProfileQuery } from '../../../application/user/get-user-profile/get-user-profile.query';
 import { RegisterUserRequestDto } from './dto/register-user.request.dto';
 import { UserResponseDto } from '../../../application/user/common/user-response.dto';
 import { EmailAlreadyInUseError, UserNotFoundError } from '../../../domain/user/errors/user.errors';
@@ -102,7 +103,9 @@ describe('UserController', () => {
       const result = await controller.getUserProfile('user-123');
 
       // Assert
-      expect(mockGetUserProfileUseCase.execute).toHaveBeenCalledWith('user-123');
+      expect(mockGetUserProfileUseCase.execute).toHaveBeenCalledWith(
+        new GetUserProfileQuery('user-123'),
+      );
       expect(result).toEqual({
         id: 'user-123',
         email: 'test@example.com',

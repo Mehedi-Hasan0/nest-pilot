@@ -5,7 +5,9 @@ import { PublishPostUseCase } from '../../../application/post/publish-post/publi
 import { GetPostUseCase } from '../../../application/post/get-post/get-post.use-case';
 import { CreatePostRequestDto } from './dto/create-post.request.dto';
 import { CreatePostCommand } from '../../../application/post/create-post/create-post.command';
+import { PublishPostCommand } from '../../../application/post/publish-post/publish-post.command';
 import { PostPresenter, PostHttpResponse } from './post.presenter';
+import { CurrentUser } from '../../common/auth/current-user.decorator';
 
 @ApiTags('posts')
 @Controller('posts')
@@ -40,8 +42,11 @@ export class PostController {
   @HttpCode(200)
   @ApiOperation({ summary: 'Publish a draft post' })
   @ApiResponse({ status: 200, description: 'Post published successfully' })
-  public async publishPost(@Param('id') id: string): Promise<PostHttpResponse> {
-    const result = await this.publishPostUseCase.execute(id);
+  public async publishPost(
+    @Param('id') id: string,
+    @CurrentUser() userId: string,
+  ): Promise<PostHttpResponse> {
+    const result = await this.publishPostUseCase.execute(new PublishPostCommand(id, userId));
     return PostPresenter.toResponse(result);
   }
 }

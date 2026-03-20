@@ -5,6 +5,7 @@ import {
   UserRepositoryPort,
   USER_REPOSITORY_PORT,
 } from '../../../domain/user/ports/user.repository.port';
+import { GetUserProfileQuery } from './get-user-profile.query';
 
 @Injectable()
 export class GetUserProfileUseCase {
@@ -13,11 +14,11 @@ export class GetUserProfileUseCase {
     private readonly userRepository: UserRepositoryPort,
   ) {}
 
-  public async execute(userId: string): Promise<UserResponseDto> {
-    const user = await this.userRepository.findById(userId);
+  public async execute(query: GetUserProfileQuery): Promise<UserResponseDto> {
+    const user = await this.userRepository.findById(query.userId);
 
     if (!user) {
-      throw new UserNotFoundError(userId);
+      throw new UserNotFoundError(query.userId);
     }
 
     return UserResponseDto.fromEntity(user);
