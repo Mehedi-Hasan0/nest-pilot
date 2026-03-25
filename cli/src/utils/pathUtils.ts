@@ -10,9 +10,9 @@ import * as path from 'path';
  * Decision OQ-4: Resolving from __dirname relative to the compiled entry.
  */
 export function resolveTemplatesDir(): string {
-  // __dirname in compiled dist/index.js → dist/
-  // templates/ lives at ../../templates/ relative to dist/
-  return path.resolve(__dirname, '..', '..', 'templates');
+  // src/utils/pathUtils.ts compiles to dist/utils/pathUtils.js
+  // From dist/utils/, we need: .. (dist) -> .. (cli) -> .. (root) -> templates/
+  return path.resolve(__dirname, '..', '..', '..', 'templates');
 }
 
 /**

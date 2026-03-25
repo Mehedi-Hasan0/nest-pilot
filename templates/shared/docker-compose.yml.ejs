@@ -1,0 +1,57 @@
+version: '3.8'
+
+networks:
+  <%= projectName %>-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+<% if (hasRedis) { -%>
+  redis-data:
+<% } -%>
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '${PORT:-3000}:3000'
+    env_file:
+      - .env
+    environment:
+      DATABASE_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - <%= projectName %>-network
+
+  db:
+    image: postgres:16-alpine
+    ports:
+      - '${DATABASE_PORT:-5432}:5432'
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - <%= projectName %>-network
+
+<% if (hasRedis) { -%>
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      - <%= projectName %>-network
+<% } -%>

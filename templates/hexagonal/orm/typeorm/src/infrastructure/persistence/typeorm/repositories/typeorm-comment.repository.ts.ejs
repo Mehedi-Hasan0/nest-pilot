@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CommentRepositoryPort } from '../../../domain/comment/ports/comment.repository.port';
-import { Comment } from '../../../domain/comment/entities/comment.entity';
-import { CommentOrmEntity } from './comment.orm-entity';
-import { CommentMapper } from './comment.mapper';
+import { CommentRepositoryPort } from '../../../../domain/comment/ports/comment.repository.port';
+import { Comment } from '../../../../domain/comment/entities/comment.entity';
+import { CommentOrmEntity } from '../entities/comment.orm-entity';
+import { CommentMapper } from '../mappers/comment.mapper';
 
 @Injectable()
 export class CommentRepositoryAdapter implements CommentRepositoryPort {

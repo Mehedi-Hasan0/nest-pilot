@@ -1,5 +1,4 @@
 import { execSync } from 'child_process';
-import chalk from 'chalk';
 
 /**
  * Initializes a git repository in the output directory.
@@ -11,11 +10,12 @@ import chalk from 'chalk';
 export async function gitInit(outputDir: string): Promise<void> {
   try {
     execSync('git init', { cwd: outputDir, stdio: 'pipe' });
+    execSync('git add .', { cwd: outputDir, stdio: 'pipe' });
+    execSync('git commit -m "chore: initial project scaffold via nest-pilot"', {
+      cwd: outputDir,
+      stdio: 'pipe',
+    });
   } catch (_error) {
-    console.warn(
-      chalk.yellow(
-        '⚠  git not found — skipping repository initialization. Install git and run `git init` manually.',
-      ),
-    );
+    // If git is not installed or configured, skip silently
   }
 }

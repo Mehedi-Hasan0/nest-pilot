@@ -1,0 +1,25 @@
+import { IsString, IsUUID, MaxLength } from 'class-validator';
+<% if (hasSwagger) { -%>
+import { ApiProperty } from '@nestjs/swagger';
+<% } -%>
+
+export class AddCommentRequestDto {
+  @IsString()
+  @MaxLength(500)
+<% if (hasSwagger) { -%>
+  @ApiProperty({ example: 'This is a great post!' })
+<% } -%>
+  public content!: string;
+
+  @IsUUID()
+<% if (hasSwagger) { -%>
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
+<% } -%>
+  public authorId!: string;
+
+  @IsUUID()
+<% if (hasSwagger) { -%>
+  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000' })
+<% } -%>
+  public postId!: string;
+}

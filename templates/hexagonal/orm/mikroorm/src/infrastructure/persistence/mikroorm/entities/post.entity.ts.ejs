@@ -1,0 +1,23 @@
+import { Entity, PrimaryKey, Property, ManyToOne } from '@mikro-orm/core';
+import { UserOrmEntity } from './user.entity';
+
+@Entity({ tableName: 'posts' })
+export class PostOrmEntity {
+  @PrimaryKey()
+  id!: string;
+
+  @Property()
+  title!: string;
+
+  @Property({ type: 'text' })
+  content!: string;
+
+  @ManyToOne({ entity: () => UserOrmEntity })
+  author!: UserOrmEntity;
+
+  @Property({ onCreate: () => new Date() })
+  createdAt: Date = new Date();
+
+  @Property({ onUpdate: () => new Date() })
+  updatedAt: Date = new Date();
+}

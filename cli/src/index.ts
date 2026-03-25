@@ -1,5 +1,17 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
+import chalk from 'chalk';
+
+// Node version check (v18+)
+// PRD-02 §11.1 Scenario 7
+const nodeVersion = parseInt(process.version.slice(1).split('.')[0], 10);
+if (nodeVersion < 18) {
+  console.error(
+    chalk.red(`✖ Node.js v18 or higher is required. You are running ${process.version}.`),
+  );
+  process.exit(1);
+}
+
 import { createCommand } from './commands/create.command';
 
 const program = new Command();

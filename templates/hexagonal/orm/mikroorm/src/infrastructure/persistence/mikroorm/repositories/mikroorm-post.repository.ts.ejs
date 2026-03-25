@@ -1,0 +1,39 @@
+import { Injectable } from '@nestjs/common';
+import { EntityManager, EntityRepository } from '@mikro-orm/core';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { PostRepositoryPort } from '../../../../domain/post/ports/post.repository.port';
+import { Post } from '../../../../domain/post/entities/post.entity';
+import { PostOrmEntity } from '../entities/post.entity';
+
+@Injectable()
+export class MikroOrmPostRepository implements PostRepositoryPort {
+  constructor(
+    private readonly em: EntityManager,
+    @InjectRepository(PostOrmEntity)
+    private readonly repository: EntityRepository<PostOrmEntity>,
+  ) {}
+
+  public async save(post: Post): Promise<void> {
+    const ormEntity = this.repository.create({
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      author: post.authorId,
+      createdAt: post.createdAt,
+      updatedAt: post.updatedAt,
+    });
+    await this.em.upsert(ormEntity);
+    await this.em.flush();
+  }
+
+  public async findById(id: string): Promise<Post | null> {
+    const record = await this.repository.findOne({ id });
+    if (!record) return null;
+    // @ts-ignore fallback for relation string ID mapping in simplistic mapper
+    return new Post(record.id, record.title, record.content, record.author.id || record.author as unknown as string, record.createdAt, record.updatedAt);
+  }
+
+  public async delete(id: string): Promise<void> {
+    await this.repository.nativeDelete({ id });
+  }
+}

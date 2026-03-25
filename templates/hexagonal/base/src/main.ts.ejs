@@ -1,0 +1,84 @@
+import helmet from 'helmet';
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+<% if (hasSwagger) { -%>
+import { setupSwagger } from './infrastructure/http/swagger.setup';
+<% } -%>
+<% if (auth === 'session') { -%>
+import * as session from 'express-session';
+import * as passport from 'passport';
+import RedisStore from 'connect-redis';
+import { Redis } from 'ioredis';
+<% } -%>
+import { AppModule } from './app.module';
+import { DomainExceptionFilter } from './infrastructure/common/filters/domain-exception.filter';
+import { ConfigService } from '@nestjs/config';
+
+async function bootstrap(): Promise<void> {
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn'],
+  });
+
+  const configService = app.get<ConfigService>(ConfigService);
+  const port = configService.getOrThrow<number>('PORT');
+
+  // Security
+  app.use(helmet());
+  app.enableCors({
+    origin: configService.get<string>('APP_CORS_ORIGIN') || '*',
+  });
+
+<% if (auth === 'session') { -%>
+  // Sessions
+  const redisClient = new Redis({
+    host: configService.get<string>('REDIS_HOST', 'localhost'),
+    port: configService.get<number>('REDIS_PORT', 6379),
+  });
+
+  app.use(
+    session({
+      store: new RedisStore({ client: redisClient }),
+      secret: configService.getOrThrow<string>('SESSION_SECRET'),
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        maxAge: 3600000, // 1 hour
+        httpOnly: true,
+        secure: configService.get('NODE_ENV') === 'production',
+      },
+    }),
+  );
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+<% } -%>
+
+  // Global Interceptors & Filters
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+  app.useGlobalFilters(new DomainExceptionFilter());
+
+  // Graceful Shutdown
+  app.enableShutdownHooks();
+
+<% if (hasSwagger) { -%>
+  // Swagger Documentation
+  if (configService.get('NODE_ENV') !== 'production') {
+    setupSwagger(app);
+  }
+<% } -%>
+
+  await app.listen(port);
+<% if (hasSwagger) { -%>
+  console.log(`🚀 Application is running on: http://localhost:${port}/api/docs`);
+<% } else { -%>
+  console.log(`🚀 Application is running on: http://localhost:${port}`);
+<% } -%>
+}
+
+bootstrap();

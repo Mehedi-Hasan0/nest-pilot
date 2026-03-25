@@ -4,10 +4,20 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 <% } else if (orm === 'mikroorm') { -%>
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import mikroOrmConfig from './infrastructure/config/mikro-orm.config';
 <% } -%>
 import { validateEnv } from './infrastructure/common/config/env.validation';
 <% if (auth !== 'none') { -%>
-import { AuthModule } from './infrastructure/common/auth/auth.module';
+import { AuthModule } from './infrastructure/auth/auth.module';
+<% } -%>
+<% if (hasRedis) { -%>
+import { RedisCacheModule } from './infrastructure/cache/redis-cache.module';
+<% } -%>
+<% if (hasBullMQ) { -%>
+import { QueueModule } from './infrastructure/jobs/queue.module';
+<% } -%>
+<% if (hasWebSockets) { -%>
+import { ExampleGateway } from './infrastructure/gateways/example.gateway';
 <% } -%>
 <% if (includeExampleCode) { -%>
 import { UserModule } from './infrastructure/user/user.module';
@@ -45,19 +55,34 @@ import { CommentModule } from './infrastructure/comment/comment.module';
     // PrismaService is typically imported directly by feature modules, not here
 <% } else if (orm === 'mikroorm') { -%>
     // Database — configured async so it can inject ConfigService
-    MikroOrmModule.forRoot(),
+    MikroOrmModule.forRoot(mikroOrmConfig),
 <% } -%>
 
 <% if (auth !== 'none') { -%>
     // Authentication — protects routes by default
     AuthModule,
+<% } else { -%>
+    // Authentication is not configured.
+    // To add authentication, see: https://docs.nestjs.com/security/authentication
 <% } -%>
-
+<% if (hasRedis) { -%>
+    // Redis Caching
+    RedisCacheModule,
+<% } -%>
+<% if (hasBullMQ) { -%>
+    // Background Jobs
+    QueueModule,
+<% } -%>
 <% if (includeExampleCode) { -%>
     // Domain Feature Modules
     UserModule,
     PostModule,
     CommentModule,
+<% } -%>
+  ],
+  providers: [
+<% if (hasWebSockets) { -%>
+    ExampleGateway,
 <% } -%>
   ],
 })

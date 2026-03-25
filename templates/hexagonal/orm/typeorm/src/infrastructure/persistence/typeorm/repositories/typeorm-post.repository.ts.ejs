@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostRepositoryPort } from '../../../domain/post/ports/post.repository.port';
-import { Post } from '../../../domain/post/entities/post.entity';
-import { PostOrmEntity } from './post.orm-entity';
-import { PostMapper } from './post.mapper';
+import { PostRepositoryPort } from '../../../../domain/post/ports/post.repository.port';
+import { Post } from '../../../../domain/post/entities/post.entity';
+import { PostOrmEntity } from '../entities/post.orm-entity';
+import { PostMapper } from '../mappers/post.mapper';
 
 @Injectable()
 export class PostRepositoryAdapter implements PostRepositoryPort {

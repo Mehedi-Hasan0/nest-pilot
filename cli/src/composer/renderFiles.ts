@@ -77,7 +77,7 @@ async function walkAndRender(
   const outputRelativePath = path.join(...renamedParts);
   const outputFilePath = path.join(outputDir, outputRelativePath);
 
-  if (dryRun || verbose) {
+  if (verbose) {
     console.log(`  ${path.relative(process.cwd(), currentPath)} → ${outputFilePath}`);
   }
 
@@ -90,10 +90,18 @@ async function walkAndRender(
     try {
       const rendered = await ejs.renderFile(currentPath, context as ejs.Data, { async: true });
       await fs.writeFile(outputFilePath, rendered, 'utf-8');
-    } catch (error: unknown) {
-      const ejsError = error as Error;
-      console.error(`Template error in "${relativePath}": ${ejsError.message}`);
-      throw ejsError;
+    } catch (err: unknown) {
+      const error = err as Error;
+      // Suppress stack trace unless verbose
+      const message = verbose ? error.stack : error.message;
+      if (verbose) {
+        console.error(message, error);
+      } else {
+        console.error(
+          `${message}\nPlease report this at https://github.com/Mehedi-Hasan0/nest-pilot/issues`,
+        );
+      }
+      throw error;
     }
   } else {
     // Copy unchanged

@@ -1,0 +1,41 @@
+import { Controller, Post, Body, HttpCode } from '@nestjs/common';
+<% if (hasSwagger) { -%>
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+<% } -%>
+import { AddCommentUseCase } from '../../../application/comment/add-comment/add-comment.use-case';
+import { AddCommentRequestDto } from './dto/add-comment.request.dto';
+import { AddCommentCommand } from '../../../application/comment/add-comment/add-comment.command';
+import { CommentPresenter, CommentHttpResponse } from './comment.presenter';
+<% if (auth !== 'none') { -%>
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+<% } -%>
+
+<% if (hasSwagger) { -%>
+@ApiTags('comments')
+<% } -%>
+@Controller('comments')
+export class CommentController {
+  constructor(private readonly addCommentUseCase: AddCommentUseCase) {}
+
+  @Post()
+  @HttpCode(201)
+<% if (hasSwagger) { -%>
+  @ApiOperation({ summary: 'Add a comment to a post' })
+  @ApiResponse({ status: 201, description: 'Comment added successfully' })
+<% } -%>
+  public async addComment(
+    @Body() dto: AddCommentRequestDto,
+<% if (auth !== 'none') { -%>
+    @CurrentUser() userId: string,
+<% } -%>
+  ): Promise<CommentHttpResponse> {
+    const result = await this.addCommentUseCase.execute(
+<% if (auth !== 'none') { -%>
+      new AddCommentCommand(dto.content, userId, dto.postId),
+<% } else { -%>
+      new AddCommentCommand(dto.content, dto.authorId, dto.postId),
+<% } -%>
+    );
+    return CommentPresenter.toResponse(result);
+  }
+}

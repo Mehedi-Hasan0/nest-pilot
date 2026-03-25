@@ -13,8 +13,8 @@ export function createCommand(): Command {
     .description('Create a new NestJS project')
     .argument('[project-name]', 'Name of the project to create')
     .option('--dry-run', 'Preview what will be generated without writing to disk')
-    .option('--skip-install', 'Skip the npm install step')
-    .option('--skip-git', 'Skip the git init step')
+    .option('--skip-install', 'skip the automatic installation of dependencies')
+    .option('--skip-git', 'skip initializing a git repository')
     .option(
       '--defaults',
       'Skip all prompts and use sensible defaults (Hexagonal, TypeORM, PostgreSQL, JWT, npm)',

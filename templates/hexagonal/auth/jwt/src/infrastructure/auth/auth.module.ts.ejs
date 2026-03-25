@@ -1,0 +1,48 @@
+import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+
+/**
+ * AuthModule encapsulates all authentication infrastructure.
+ *
+ * It wires together:
+ * - PassportModule (the overall auth framework)
+ * - JwtModule (token signing/verification with config-driven options)
+ * - JwtStrategy (validates incoming JWTs via Passport)
+ * - JwtAuthGuard (applied globally as the APP_GUARD — every route is protected by default)
+ *
+ * The global guard + @Public() opt-out pattern:
+ * Routes are protected by default. To mark a route as public (e.g. registration, login),
+ * decorate it with @Public(). This is safer than opt-in auth where a developer
+ * could accidentally forget to add a guard to a sensitive route.
+ */
+@Module({
+  imports: [
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.getOrThrow<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: configService.get<string>('JWT_EXPIRES_IN', '7d') as unknown as number,
+        },
+      }),
+    }),
+  ],
+  providers: [
+    JwtStrategy,
+    {
+      // Registers JwtAuthGuard as a global guard via NestJS DI.
+      // Any module that imports AuthModule will have all its routes protected.
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
+  exports: [JwtAuthGuard, JwtModule, PassportModule],
+})
+export class AuthModule {}

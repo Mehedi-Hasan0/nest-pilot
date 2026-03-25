@@ -1,13 +1,16 @@
-import { Comment } from '../../../domain/comment/entities/comment.entity';
-import { CommentOrmEntity } from './comment.orm-entity';
+import
+{Comment } from '../../../../domain/comment/entities/comment.entity';
+import { CommentId } from '../../../../domain/comment/value-objects/comment-id.vo';
+import { PostId } from '../../../../domain/post/value-objects/post-id.vo';
+import { UserId } from '../../../../domain/user/value-objects/user-id.vo';
+import { CommentOrmEntity } from '../entities/comment.orm-entity';
 
 export class CommentMapper {
   public static toDomain(ormEntity: CommentOrmEntity): Comment {
     return Comment.reconstitute(
-      ormEntity.id,
-      {
+      ormEntity.id, {
         content: ormEntity.content,
-        authorId: ormEntity.authorId,
+  authorId: ormEntity.authorId,
         postId: ormEntity.postId,
       },
       ormEntity.createdAt,
@@ -15,12 +18,9 @@ export class CommentMapper {
   }
 
   public static toOrm(domainEntity: Comment): CommentOrmEntity {
-    const ormEntity = new CommentOrmEntity();
-    ormEntity.id = domainEntity.id.value;
-    ormEntity.content = domainEntity.content;
-    ormEntity.authorId = domainEntity.authorId.value;
-    ormEntity.postId = domainEntity.postId.value;
-    ormEntity.createdAt = domainEntity.createdAt;
+    const ormEntity = new CommentOrmEntity(); ormEntity.id = domainEntity.id.value;
+    ormEntity.content = domainEntity.content; ormEntity.authorId = domainEntity.authorId.value;
+    ormEntity.postId = domainEntity.postId.value; ormEntity.createdAt = domainEntity.createdAt;
     return ormEntity;
   }
 }
