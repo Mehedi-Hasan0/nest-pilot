@@ -77,7 +77,7 @@ async function walkAndRender(
   const outputRelativePath = path.join(...renamedParts);
   const outputFilePath = path.join(outputDir, outputRelativePath);
 
-  if (dryRun || verbose) {
+  if (verbose) {
     console.log(`  ${path.relative(process.cwd(), currentPath)} → ${outputFilePath}`);
   }
 

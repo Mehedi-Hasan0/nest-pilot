@@ -44,6 +44,7 @@ describe('compose() — integration test', () => {
       outputDir,
       context: defaultContext,
       dryRun: false,
+      skipInstall: true,
       skipGit: true,
       verbose: false,
     });
@@ -55,6 +56,7 @@ describe('compose() — integration test', () => {
       outputDir,
       context: defaultContext,
       dryRun: false,
+      skipInstall: true,
       skipGit: true,
       verbose: false,
     });
@@ -69,6 +71,7 @@ describe('compose() — integration test', () => {
       outputDir,
       context: defaultContext,
       dryRun: false,
+      skipInstall: true,
       skipGit: true,
       verbose: false,
     });
@@ -83,6 +86,7 @@ describe('compose() — integration test', () => {
       outputDir,
       context: defaultContext,
       dryRun: false,
+      skipInstall: true,
       skipGit: true,
       verbose: false,
     });
@@ -96,6 +100,7 @@ describe('compose() — integration test', () => {
       outputDir,
       context: { ...defaultContext, projectName: 'my-test-app' },
       dryRun: false,
+      skipInstall: true,
       skipGit: true,
       verbose: false,
     });
@@ -110,6 +115,7 @@ describe('compose() — integration test', () => {
       outputDir,
       context: defaultContext,
       dryRun: true,
+      skipInstall: true,
       skipGit: true,
       verbose: false,
     });
@@ -123,6 +129,7 @@ async function getAllFiles(dir: string): Promise<string[]> {
   for (const entry of entries) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
+      if (entry.name === 'node_modules' || entry.name === '.git') continue;
       results.push(...(await getAllFiles(full)));
     } else {
       results.push(full);
