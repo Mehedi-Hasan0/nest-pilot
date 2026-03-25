@@ -1,6 +1,6 @@
 {
   "name": "nest-pilot",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Interactive CLI for generating NestJS projects with Hexagonal, DDD, or Modular architecture",
   "author": "Mehedi Hasan",
   "license": "MIT",
