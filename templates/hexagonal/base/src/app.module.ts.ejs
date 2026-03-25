@@ -8,7 +8,7 @@ import mikroOrmConfig from './infrastructure/config/mikro-orm.config';
 <% } -%>
 import { validateEnv } from './infrastructure/common/config/env.validation';
 <% if (auth !== 'none') { -%>
-import { AuthModule } from './infrastructure/common/auth/auth.module';
+import { AuthModule } from './infrastructure/auth/auth.module';
 <% } -%>
 <% if (includeExampleCode) { -%>
 import { UserModule } from './infrastructure/user/user.module';

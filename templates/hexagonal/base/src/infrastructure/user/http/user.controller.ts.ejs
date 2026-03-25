@@ -5,7 +5,9 @@ import { GetUserProfileUseCase } from '../../../application/user/get-user-profil
 import { GetUserProfileQuery } from '../../../application/user/get-user-profile/get-user-profile.query';
 import { RegisterUserRequestDto } from './dto/register-user.request.dto';
 import { RegisterUserCommand } from '../../../application/user/register-user/register-user.command';
-import { Public } from '../../common/auth/public.decorator';
+<% if (auth !== 'none') { -%>
+import { Public } from '../../auth/guards/public.decorator';
+<% } -%>
 import { UserPresenter, UserHttpResponse } from './user.presenter';
 
 @ApiTags('users')
@@ -18,7 +20,9 @@ export class UserController {
 
   @Post()
   @HttpCode(201)
+<% if (auth !== 'none') { -%>
   @Public() // Registration is open — no JWT required
+<% } -%>
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({ status: 201, description: 'User registered successfully' })
   public async registerUser(@Body() dto: RegisterUserRequestDto): Promise<UserHttpResponse> {

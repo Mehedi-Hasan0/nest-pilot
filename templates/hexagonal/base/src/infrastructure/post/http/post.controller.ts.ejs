@@ -7,7 +7,9 @@ import { CreatePostRequestDto } from './dto/create-post.request.dto';
 import { CreatePostCommand } from '../../../application/post/create-post/create-post.command';
 import { PublishPostCommand } from '../../../application/post/publish-post/publish-post.command';
 import { PostPresenter, PostHttpResponse } from './post.presenter';
-import { CurrentUser } from '../../common/auth/current-user.decorator';
+<% if (auth !== 'none') { -%>
+import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+<% } -%>
 
 @ApiTags('posts')
 @Controller('posts')
@@ -44,7 +46,11 @@ export class PostController {
   @ApiResponse({ status: 200, description: 'Post published successfully' })
   public async publishPost(
     @Param('id') id: string,
+<% if (auth !== 'none') { -%>
     @CurrentUser() userId: string,
+<% } else { -%>
+    @Body('userId') userId: string, // Fallback for no-auth example
+<% } -%>
   ): Promise<PostHttpResponse> {
     const result = await this.publishPostUseCase.execute(new PublishPostCommand(id, userId));
     return PostPresenter.toResponse(result);
