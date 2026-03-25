@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+### [0.2.4](https://github.com/Mehedi-Hasan0/nest-pilot/compare/v0.2.3...v0.2.4) (2026-03-25)
+
+### Bug Fixes
+
+- cli version updated ([21b5297](https://github.com/Mehedi-Hasan0/nest-pilot/commit/21b529755ab887815a7c1cd633f2061281602484))
+- resolve out-of-sync lockfile and add action permissions ([0b7e199](https://github.com/Mehedi-Hasan0/nest-pilot/commit/0b7e199fb9239615f57dbd1fbbe78362c293d22f))
+
 ### [0.2.3](https://github.com/Mehedi-Hasan0/nest-pilot/compare/v0.2.2...v0.2.3) (2026-03-25)
 
 ### Features
