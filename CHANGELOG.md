@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+### [0.2.2](https://github.com/Mehedi-Hasan0/nest-pilot/compare/v0.2.1...v0.2.2) (2026-03-25)
+
+### Features
+
+- refactor base modules for dynamic ORM selection, fixes([#30](https://github.com/Mehedi-Hasan0/nest-pilot/issues/30)) ([e768b75](https://github.com/Mehedi-Hasan0/nest-pilot/commit/e768b759243025ae5358ee303fef4804444c28f0))
+- add mikro-orm integration to the hexagonal architecture ([c749cf4](https://github.com/Mehedi-Hasan0/nest-pilot/commit/c749cf4dd0311e528414ee9ba9ccf898e899c4b2))
+- add prisma orm template layer ([c2db6d5](https://github.com/Mehedi-Hasan0/nest-pilot/commit/c2db6d54aa6e56e4f4caa505bb22f9a421cd2de7))
+- bullmq optional module added ([679edad](https://github.com/Mehedi-Hasan0/nest-pilot/commit/679edaddaedfe1f1f0e9bec459cdb03320b9daa1))
+- **cli:** extend prompt flow with Phase 2 inputs ([#1](https://github.com/Mehedi-Hasan0/nest-pilot/issues/1)) ([01edc31](https://github.com/Mehedi-Hasan0/nest-pilot/commit/01edc319472156bce46db79c5ceaa07ba642ac74))
+- error handling added ([c02ffd5](https://github.com/Mehedi-Hasan0/nest-pilot/commit/c02ffd5bd41c0f29eae6a80ce8ac5cabc46b3c5b))
+- extend ejs context with derived vairables templates, fixes([#26](https://github.com/Mehedi-Hasan0/nest-pilot/issues/26)) ([892864b](https://github.com/Mehedi-Hasan0/nest-pilot/commit/892864b02d3b23787a56df9318e1cd4b7dd05271))
+- implement template overlay resolution system for dynamic template composition, fixes ([#28](https://github.com/Mehedi-Hasan0/nest-pilot/issues/28)) ([cf0f769](https://github.com/Mehedi-Hasan0/nest-pilot/commit/cf0f769d65b6c57bbc4e092e9fb6972a7de01af7))
+- jwt auth template layer added ([adfd994](https://github.com/Mehedi-Hasan0/nest-pilot/commit/adfd994054ab61fe233ed1592afafce8c2b964ff))
+- none-auth variant added ([20a947d](https://github.com/Mehedi-Hasan0/nest-pilot/commit/20a947de0b5fa9cc9a7bf5d192946b508fd1427c))
+- post generation, managing file generation, dependency installation and git initialization ([8bc9708](https://github.com/Mehedi-Hasan0/nest-pilot/commit/8bc9708b3b5456902fa62aec3e6038be75a54433))
+- redis cache optional module added ([2234ef1](https://github.com/Mehedi-Hasan0/nest-pilot/commit/2234ef1df5cfab8846fcb3fa0215b5b802974c2e))
+- session auth template-layer ([fae92d2](https://github.com/Mehedi-Hasan0/nest-pilot/commit/fae92d2b564bbcb67f45b5ca36fa427fbdf6db27))
+- swagger optional module added ([6719d01](https://github.com/Mehedi-Hasan0/nest-pilot/commit/6719d0130658abbc6d5b41e0068809c1950a86b6))
+- templates for hexagonal architecture with orms, and shared project config ([52f31bf](https://github.com/Mehedi-Hasan0/nest-pilot/commit/52f31bff21f1e728fa06d4580802b0195971bfb0))
+- websockets optional module added ([37a1786](https://github.com/Mehedi-Hasan0/nest-pilot/commit/37a178687ffd30a43171ef90f637b63a0fd1b742))
+
+### Bug Fixes
+
+- docs/issues to git ignore files ([72564ec](https://github.com/Mehedi-Hasan0/nest-pilot/commit/72564ec8b964fb4c91a5a68a1a9c960b5ae246e2))
+- removed unnecessary docs ([57e757d](https://github.com/Mehedi-Hasan0/nest-pilot/commit/57e757d028a685d64a565c9a689fbbea21523bce))
+- security vulnerability, package mismatch ([f93f0d1](https://github.com/Mehedi-Hasan0/nest-pilot/commit/f93f0d15a13f35b64deb78d909e5a3f98fdd4f5a))
+
 ### [0.2.1](https://github.com/Mehedi-Hasan0/nest-pilot/compare/v0.2.0...v0.2.1) (2026-03-20)
 
 ### Features
