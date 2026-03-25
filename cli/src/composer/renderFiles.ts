@@ -90,8 +90,10 @@ async function walkAndRender(
     try {
       const rendered = await ejs.renderFile(currentPath, context as ejs.Data, { async: true });
       await fs.writeFile(outputFilePath, rendered, 'utf-8');
-    } catch (error: any) {
-      const message = `Template error in "${relativePath}": ${error.message}`;
+    } catch (err: unknown) {
+      const error = err as Error;
+      // Suppress stack trace unless verbose
+      const message = verbose ? error.stack : error.message;
       if (verbose) {
         console.error(message, error);
       } else {
