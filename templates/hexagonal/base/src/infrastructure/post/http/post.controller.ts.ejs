@@ -1,5 +1,7 @@
 import { Controller, Post, Body, Param, Get, Patch, HttpCode } from '@nestjs/common';
+<% if (hasSwagger) { -%>
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+<% } -%>
 import { CreatePostUseCase } from '../../../application/post/create-post/create-post.use-case';
 import { PublishPostUseCase } from '../../../application/post/publish-post/publish-post.use-case';
 import { GetPostUseCase } from '../../../application/post/get-post/get-post.use-case';
@@ -11,7 +13,9 @@ import { PostPresenter, PostHttpResponse } from './post.presenter';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 <% } -%>
 
+<% if (hasSwagger) { -%>
 @ApiTags('posts')
+<% } -%>
 @Controller('posts')
 export class PostController {
   constructor(
@@ -22,8 +26,10 @@ export class PostController {
 
   @Post()
   @HttpCode(201)
+<% if (hasSwagger) { -%>
   @ApiOperation({ summary: 'Create a new draft post' })
   @ApiResponse({ status: 201, description: 'Draft post created successfully' })
+<% } -%>
   public async createPost(@Body() dto: CreatePostRequestDto): Promise<PostHttpResponse> {
     const result = await this.createPostUseCase.execute(
       new CreatePostCommand(dto.title, dto.content, dto.authorId),
@@ -33,8 +39,10 @@ export class PostController {
 
   @Get(':id')
   @HttpCode(200)
+<% if (hasSwagger) { -%>
   @ApiOperation({ summary: 'Get a post by ID' })
   @ApiResponse({ status: 200, description: 'Post returned successfully' })
+<% } -%>
   public async getPost(@Param('id') id: string): Promise<PostHttpResponse> {
     const result = await this.getPostUseCase.execute(id);
     return PostPresenter.toResponse(result);
@@ -42,8 +50,10 @@ export class PostController {
 
   @Patch(':id/publish')
   @HttpCode(200)
+<% if (hasSwagger) { -%>
   @ApiOperation({ summary: 'Publish a draft post' })
   @ApiResponse({ status: 200, description: 'Post published successfully' })
+<% } -%>
   public async publishPost(
     @Param('id') id: string,
 <% if (auth !== 'none') { -%>

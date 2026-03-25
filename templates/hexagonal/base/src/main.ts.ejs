@@ -1,7 +1,9 @@
 import helmet from 'helmet';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+<% if (hasSwagger) { -%>
+import { setupSwagger } from './infrastructure/http/swagger.setup';
+<% } -%>
 <% if (auth === 'session') { -%>
 import * as session from 'express-session';
 import * as passport from 'passport';
@@ -64,20 +66,19 @@ async function bootstrap(): Promise<void> {
   // Graceful Shutdown
   app.enableShutdownHooks();
 
+<% if (hasSwagger) { -%>
   // Swagger Documentation
   if (configService.get('NODE_ENV') !== 'production') {
-    const config = new DocumentBuilder()
-      .setTitle('Hexagonal API')
-      .setDescription('Clean Architecture NestJS API')
-      .setVersion('1.0')
-      .addBearerAuth()
-      .build();
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api/docs', app, document);
+    setupSwagger(app);
   }
+<% } -%>
 
   await app.listen(port);
+<% if (hasSwagger) { -%>
   console.log(`🚀 Application is running on: http://localhost:${port}/api/docs`);
+<% } else { -%>
+  console.log(`🚀 Application is running on: http://localhost:${port}`);
+<% } -%>
 }
 
 bootstrap();

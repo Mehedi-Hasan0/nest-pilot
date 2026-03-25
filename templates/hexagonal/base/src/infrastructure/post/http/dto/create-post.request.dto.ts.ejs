@@ -1,0 +1,27 @@
+import { IsString, MinLength, MaxLength, IsUUID } from 'class-validator';
+<% if (hasSwagger) { -%>
+import { ApiProperty } from '@nestjs/swagger';
+<% } -%>
+
+export class CreatePostRequestDto {
+  @IsString()
+  @MinLength(3)
+  @MaxLength(100)
+<% if (hasSwagger) { -%>
+  @ApiProperty({ example: 'My first post' })
+<% } -%>
+  public title!: string;
+
+  @IsString()
+  @MinLength(10)
+<% if (hasSwagger) { -%>
+  @ApiProperty({ example: 'This is the content of my first post.' })
+<% } -%>
+  public content!: string;
+
+  @IsUUID()
+<% if (hasSwagger) { -%>
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000' })
+<% } -%>
+  public authorId!: string;
+}
