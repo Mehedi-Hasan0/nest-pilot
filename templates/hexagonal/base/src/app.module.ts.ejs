@@ -16,6 +16,9 @@ import { RedisCacheModule } from './infrastructure/cache/redis-cache.module';
 <% if (hasBullMQ) { -%>
 import { QueueModule } from './infrastructure/jobs/queue.module';
 <% } -%>
+<% if (hasWebSockets) { -%>
+import { ExampleGateway } from './infrastructure/gateways/example.gateway';
+<% } -%>
 <% if (includeExampleCode) { -%>
 import { UserModule } from './infrastructure/user/user.module';
 import { PostModule } from './infrastructure/post/post.module';
@@ -75,6 +78,11 @@ import { CommentModule } from './infrastructure/comment/comment.module';
     UserModule,
     PostModule,
     CommentModule,
+<% } -%>
+  ],
+  providers: [
+<% if (hasWebSockets) { -%>
+    ExampleGateway,
 <% } -%>
   ],
 })

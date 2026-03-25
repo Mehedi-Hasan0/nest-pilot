@@ -1,0 +1,50 @@
+import {
+  WebSocketGateway,
+  WebSocketServer,
+  SubscribeMessage,
+  OnGatewayInit,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+} from '@nestjs/websockets';
+import { Logger } from '@nestjs/common';
+import { Server, Socket } from 'socket.io';
+
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
+export class ExampleGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer()
+  public server!: Server;
+
+  private readonly logger = new Logger(ExampleGateway.name);
+
+  public afterInit(server: Server): void {
+    this.logger.log('WebSocket Gateway Initialized');
+  }
+
+  public handleConnection(client: Socket, ...args: any[]): void {
+    this.logger.log(`Client connected: ${client.id}`);
+  }
+
+  public handleDisconnect(client: Socket): void {
+    this.logger.log(`Client disconnected: ${client.id}`);
+  }
+
+  @SubscribeMessage('ping')
+  public handlePing(client: Socket, data: any): void {
+    this.logger.log(`Received ping from ${client.id}:`, data);
+    client.emit('pong', { message: 'Hello from NestJS WebSockets!', timestamp: new Date() });
+  }
+
+  @SubscribeMessage('broadcast')
+  public handleBroadcast(client: Socket, data: any): void {
+    this.logger.log(`Broadcasting message from ${client.id}:`, data);
+    this.server.emit('message', {
+      sender: client.id,
+      content: data,
+      timestamp: new Date(),
+    });
+  }
+}
