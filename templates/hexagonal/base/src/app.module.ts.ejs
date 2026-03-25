@@ -10,6 +10,9 @@ import { validateEnv } from './infrastructure/common/config/env.validation';
 <% if (auth !== 'none') { -%>
 import { AuthModule } from './infrastructure/auth/auth.module';
 <% } -%>
+<% if (hasRedis) { -%>
+import { RedisCacheModule } from './infrastructure/cache/redis-cache.module';
+<% } -%>
 <% if (includeExampleCode) { -%>
 import { UserModule } from './infrastructure/user/user.module';
 import { PostModule } from './infrastructure/post/post.module';
@@ -56,7 +59,10 @@ import { CommentModule } from './infrastructure/comment/comment.module';
     // Authentication is not configured.
     // To add authentication, see: https://docs.nestjs.com/security/authentication
 <% } -%>
-
+<% if (hasRedis) { -%>
+    // Redis Caching
+    RedisCacheModule,
+<% } -%>
 <% if (includeExampleCode) { -%>
     // Domain Feature Modules
     UserModule,

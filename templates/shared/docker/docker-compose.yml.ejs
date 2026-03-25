@@ -6,6 +6,9 @@ networks:
 
 volumes:
   postgres-data:
+<% if (hasRedis) { -%>
+  redis-data:
+<% } -%>
 
 services:
   app:
@@ -41,3 +44,14 @@ services:
       retries: 5
     networks:
       - <%= projectName %>-network
+
+<% if (hasRedis) { -%>
+  redis:
+    image: redis:7-alpine
+    ports:
+      - '${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis-data:/data
+    networks:
+      - <%= projectName %>-network
+<% } -%>

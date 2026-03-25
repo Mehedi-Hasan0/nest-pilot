@@ -106,7 +106,8 @@ export function buildContext(answers: ComposerContext): EjsContext {
     ormPackages,
     authPackages,
     hasSwagger: optionalModules.includes('swagger'),
-    hasRedis: optionalModules.includes('redis') || auth === 'session',
+    hasRedis:
+      optionalModules.includes('redis') || auth === 'session' || optionalModules.includes('bullmq'),
     hasBullMQ: optionalModules.includes('bullmq'),
     hasWebSockets: optionalModules.includes('websockets'),
     hasAuth: auth !== 'none',
