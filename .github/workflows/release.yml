@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    name: Build, test, and publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test --workspace=cli
+
+      - name: Build CLI (Includes Template Bundling)
+        run: npm run build --workspace=cli
+
+      - name: Publish to npm
+        run: npm publish --workspace=cli --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          body: |
+            ## Installation
+            ```bash
+            npm install -g nest-pilot
+            ```
+
+            See [CHANGELOG.md](https://github.com/Mehedi-Hasan0/nest-pilot/blob/main/CHANGELOG.md) for full details.

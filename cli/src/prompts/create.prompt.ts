@@ -47,7 +47,7 @@ export async function runCreatePrompts(
   projectNameArg: string | undefined,
   useDefaults: boolean,
 ): Promise<CreateAnswers | null> {
-  intro('NestJS Pilot — Project Generator  v0.2.0');
+  intro('NestJS Pilot - Project Generator');
 
   // ─── Step 1: Project Setup ───────────────────────────────────────────────
 
