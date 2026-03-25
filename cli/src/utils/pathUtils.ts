@@ -1,5 +1,7 @@
 import * as path from 'path';
 
+import * as fs from 'fs';
+
 /**
  * Resolves the absolute path to the templates directory.
  *
@@ -10,8 +12,12 @@ import * as path from 'path';
  * Decision OQ-4: Resolving from __dirname relative to the compiled entry.
  */
 export function resolveTemplatesDir(): string {
-  // src/utils/pathUtils.ts compiles to dist/utils/pathUtils.js
-  // From dist/utils/, we need: .. (dist) -> .. (cli) -> .. (root) -> templates/
+  const internalTemplates = path.resolve(__dirname, '..', 'templates');
+  if (fs.existsSync(internalTemplates)) {
+    // When running from dist/utils/pathUtils.js after build
+    return internalTemplates;
+  }
+  // Fallback for local dev when running from src/utils/pathUtils.ts via tsx
   return path.resolve(__dirname, '..', '..', '..', 'templates');
 }
 
