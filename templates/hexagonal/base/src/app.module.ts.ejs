@@ -52,6 +52,9 @@ import { CommentModule } from './infrastructure/comment/comment.module';
 <% if (auth !== 'none') { -%>
     // Authentication — protects routes by default
     AuthModule,
+<% } else { -%>
+    // Authentication is not configured.
+    // To add authentication, see: https://docs.nestjs.com/security/authentication
 <% } -%>
 
 <% if (includeExampleCode) { -%>
