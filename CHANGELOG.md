@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+### [0.2.3](https://github.com/Mehedi-Hasan0/nest-pilot/compare/v0.2.2...v0.2.3) (2026-03-25)
+
+### Features
+
+- introduce 'nest-pilot' cli for interactive project generation, and automation workflow ([57ffbc3](https://github.com/Mehedi-Hasan0/nest-pilot/commit/57ffbc3c7fc52bc49ed2f3cfbdb845f040c4e263))
+
+### Documentation
+
+- contributing guides added ([5ae6ce2](https://github.com/Mehedi-Hasan0/nest-pilot/commit/5ae6ce24952c325c5c3b470f58aca98a62edba56))
+
 ### [0.2.2](https://github.com/Mehedi-Hasan0/nest-pilot/compare/v0.2.1...v0.2.2) (2026-03-25)
 
 ### Features
