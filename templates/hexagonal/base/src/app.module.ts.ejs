@@ -13,6 +13,9 @@ import { AuthModule } from './infrastructure/auth/auth.module';
 <% if (hasRedis) { -%>
 import { RedisCacheModule } from './infrastructure/cache/redis-cache.module';
 <% } -%>
+<% if (hasBullMQ) { -%>
+import { QueueModule } from './infrastructure/jobs/queue.module';
+<% } -%>
 <% if (includeExampleCode) { -%>
 import { UserModule } from './infrastructure/user/user.module';
 import { PostModule } from './infrastructure/post/post.module';
@@ -62,6 +65,10 @@ import { CommentModule } from './infrastructure/comment/comment.module';
 <% if (hasRedis) { -%>
     // Redis Caching
     RedisCacheModule,
+<% } -%>
+<% if (hasBullMQ) { -%>
+    // Background Jobs
+    QueueModule,
 <% } -%>
 <% if (includeExampleCode) { -%>
     // Domain Feature Modules
