@@ -90,10 +90,16 @@ async function walkAndRender(
     try {
       const rendered = await ejs.renderFile(currentPath, context as ejs.Data, { async: true });
       await fs.writeFile(outputFilePath, rendered, 'utf-8');
-    } catch (error: unknown) {
-      const ejsError = error as Error;
-      console.error(`Template error in "${relativePath}": ${ejsError.message}`);
-      throw ejsError;
+    } catch (error: any) {
+      const message = `Template error in "${relativePath}": ${error.message}`;
+      if (verbose) {
+        console.error(message, error);
+      } else {
+        console.error(
+          `${message}\nPlease report this at https://github.com/Mehedi-Hasan0/nest-pilot/issues`,
+        );
+      }
+      throw error;
     }
   } else {
     // Copy unchanged

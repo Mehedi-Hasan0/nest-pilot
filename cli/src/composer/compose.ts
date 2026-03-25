@@ -65,6 +65,16 @@ export async function compose(options: ComposerOptions): Promise<void> {
   const s = dryRun ? null : spinner();
   s?.start('Generating project structure...');
 
+  const cleanupOnInterrupt = () => {
+    if (fs.existsSync(outputDir) && !dryRun) {
+      fs.removeSync(outputDir);
+    }
+    console.log(chalk.yellow('\n\n⚠  Generation cancelled — cleaning up...'));
+    process.exit(0);
+  };
+
+  process.on('SIGINT', cleanupOnInterrupt);
+
   try {
     if (!dryRun) {
       await fs.ensureDir(outputDir);
@@ -130,8 +140,17 @@ export async function compose(options: ComposerOptions): Promise<void> {
     } else {
       console.log('\n[Dry Run] Complete — no files were written.');
     }
+
+    process.removeListener('SIGINT', cleanupOnInterrupt);
   } catch (error) {
     s?.stop('Generation failed.');
+
+    // Cleanup on failure (but not in dry run)
+    if (fs.existsSync(outputDir) && !dryRun) {
+      fs.removeSync(outputDir);
+    }
+
+    process.removeListener('SIGINT', cleanupOnInterrupt);
     throw error;
   }
 }
