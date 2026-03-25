@@ -49,6 +49,12 @@
     "passport-jwt": "^4.0.1",
     "@nestjs/jwt": "^10.2.0",
     "bcrypt": "^5.1.1",
+<% } else if (auth === 'session') { -%>
+    "express-session": "^1.18.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0",
+    "connect-redis": "^7.1.1",
+    "ioredis": "^5.3.2",
 <% } -%>
     "uuid": "^9.0.1"
   },
@@ -84,6 +90,10 @@
 <% if (auth === 'jwt') { -%>
     "@types/passport-jwt": "^4.0.1",
     "@types/bcrypt": "^5.0.2",
+<% } -%>
+<% if (auth === 'session') { -%>
+    "@types/express-session": "^1.18.0",
+    "@types/passport-local": "^1.0.38",
 <% } -%>
     "ts-node": "^10.9.2"
   },

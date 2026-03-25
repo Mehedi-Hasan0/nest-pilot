@@ -1,0 +1,22 @@
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-local';
+
+@Injectable()
+export class LocalStrategy extends PassportStrategy(Strategy) {
+  constructor() {
+    super({
+      usernameField: 'email',
+      passwordField: 'password',
+    });
+  }
+
+  // In a real application, you would inject a service to validate the user
+  public async validate(email: string, password: string): Promise<any> {
+    // This is a placeholder for actual validation logic
+    if (email === 'admin@example.com' && password === 'admin') {
+      return { userId: '1', email };
+    }
+    throw new UnauthorizedException('Invalid credentials');
+  }
+}
